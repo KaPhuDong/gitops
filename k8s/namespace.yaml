@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: demo
   annotations:
-    argocd.argoproj.io/sync-wave: '-1'
+    argocd.argoproj.io/sync-wave: '-1' # Số âm chạy trước cả wave 0
