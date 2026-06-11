@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>W9 — Deliver Smartly (Kiến thức + Ví dụ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-primary: #0f172a;
+  --brand-accent: #f59e0b;
+  --brand-accent-2: #fb923c;
+  --brand-secondary: #3b82f6;
+  --brand-danger: #ef4444;
+  --brand-success: #22c55e;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --surface-dark: #ffffff;
+  --surface-card: #f8fafc;
+  --gradient-warm: linear-gradient(135deg, #f59e0b, #ef4444);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; overflow-x: hidden; }
+body { font-family: 'Google Sans', sans-serif; background: var(--surface-dark); color: var(--text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.slide {
+  min-height: 100vh; width: 100%; scroll-snap-align: start; scroll-snap-stop: always;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: clamp(32px, 5vh, 80px) clamp(24px, 5vw, 120px); position: relative; overflow: hidden;
+}
+.slide-title { background: var(--surface-dark); text-align: center; }
+.slide-title::before { content: ''; position: absolute; top: -30%; right: -20%; width: 60%; height: 80%; background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%); pointer-events: none; }
+.slide-title::after { content: ''; position: absolute; bottom: -20%; left: -15%; width: 50%; height: 60%; background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%); pointer-events: none; }
+.slide-title h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+.slide-title .lead { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text-secondary); max-width: 760px; }
+.gradient-text { background: var(--gradient-warm); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.slide-divider { background: var(--surface-dark); text-align: center; }
+.slide-divider::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 60%); pointer-events: none; }
+.section-number { font-family: 'IBM Plex Mono', monospace; font-size: clamp(5rem, 12vw, 10rem); font-weight: 700; -webkit-text-stroke: 2px rgba(245,158,11,0.2); color: transparent; line-height: 1; margin-bottom: -20px; }
+.section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--brand-accent); margin-bottom: 8px; }
+.slide-divider h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+.slide-divider .lead { font-size: clamp(0.95rem, 1.5vw, 1.15rem); color: var(--text-secondary); margin-top: 12px; max-width: 640px; }
+.slide-content { width: 100%; max-width: 1100px; }
+.slide-header { margin-bottom: clamp(20px, 3vh, 40px); }
+.slide-header h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+.slide-header .lead { font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 6px; }
+.slide-footer { position: absolute; bottom: 20px; left: 40px; right: 40px; display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--brand-accent); margin-bottom: 8px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+.badge-accent { background: rgba(245,158,11,0.15); color: var(--brand-accent); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(--brand-secondary); }
+.badge-danger { background: rgba(239,68,68,0.15); color: var(--brand-danger); }
+.badge-success { background: rgba(34,197,94,0.15); color: var(--brand-success); }
+.grid { display: grid; gap: clamp(12px, 2vw, 20px); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 12px; padding: clamp(16px, 2vw, 24px); transition: transform 0.3s var(--ease-out); }
+.card:hover { transform: translateY(-2px); }
+.card h3 { font-size: clamp(0.9rem, 1.3vw, 1.1rem); font-weight: 700; margin-bottom: 8px; }
+.card p, .card li { font-size: clamp(0.8rem, 1vw, 0.9rem); color: var(--text-secondary); line-height: 1.5; }
+.card-dark { background: var(--brand-primary); border-color: rgba(245,158,11,0.2); color:#e2e8f0; }
+.card-dark h3 { color:#fff; }
+.card-accent { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,146,60,0.05)); border-color: rgba(245,158,11,0.3); }
+.card-accent h3 { color: var(--brand-accent); }
+.card-number { font-family: 'IBM Plex Mono', monospace; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; color: var(--brand-accent); line-height: 1; }
+.card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; }
+.flow-step { background: var(--surface-card); border: 1px solid var(--border); border-radius: 10px; padding: clamp(10px, 1.5vw, 18px) clamp(14px, 2vw, 22px); text-align: center; font-size: clamp(0.75rem, 1vw, 0.88rem); font-weight: 600; }
+.flow-arrow { color: var(--brand-accent); font-size: 1.2rem; padding: 0 6px; flex-shrink: 0; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+.stat { text-align: center; padding: 16px; }
+.bullets { list-style: none; padding: 0; }
+.bullets li { padding: 8px 0 8px 24px; position: relative; font-size: clamp(0.85rem, 1.1vw, 0.95rem); color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+.bullets li:last-child { border-bottom: none; }
+.bullets li::before { content: ''; position: absolute; left: 0; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-accent); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 40px); align-items: start; }
+table { width: 100%; border-collapse: collapse; font-size: clamp(0.78rem, 1vw, 0.88rem); }
+th { text-align: left; padding: 10px 14px; background: rgba(30,41,59,0.8); color: var(--brand-accent); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 2px solid rgba(245,158,11,0.3); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+tr:hover td { background: rgba(51,65,85,0.06); }
+code { font-family: 'IBM Plex Mono', monospace; font-size: 0.85em; background: rgba(51,65,85,0.12); padding: 2px 6px; border-radius: 4px; color:#0f172a; }
+.code-block { background:#0f172a; border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:16px 18px; font-family:'IBM Plex Mono',monospace; font-size:clamp(0.7rem,0.92vw,0.84rem); color:#e2e8f0; line-height:1.65; overflow-x:auto; white-space:pre; }
+.code-block .cmt { color:#64748b; } .code-block .kw { color:#f59e0b; } .code-block .str { color:#34d399; } .code-block .fn { color:#60a5fa; } .code-block .out { color:#94a3b8; }
+.lab-tag { display:inline-block; background:var(--gradient-warm); color:#fff; font-weight:800; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:4px 12px; border-radius:6px; margin-bottom:10px; }
+.do-now { display:flex; align-items:center; gap:8px; font-weight:700; color:var(--brand-accent); font-size:0.82rem; margin:4px 0 8px; }
+.checkpoint { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:12px 16px; font-size:0.84rem; color:var(--text-secondary); }
+.checkpoint strong { color:var(--brand-success); }
+.warn { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:12px 16px; font-size:0.84rem; color:var(--text-secondary); }
+.warn strong { color:var(--brand-danger); }
+.meta-chips { display: flex; gap: 12px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+.chip { display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--surface-card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); }
+.chip strong { color: var(--text-primary); }
+.reveal { opacity: 1; }
+.stagger > * { opacity: 1; }
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-warm); z-index: 1000; width: 0%; transition: width 0.3s; }
+.nav-dots { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.3); cursor: pointer; transition: all 0.3s; border: none; padding: 0; }
+.nav-dot.active { background: var(--brand-accent); transform: scale(1.4); }
+.slide-counter { position: fixed; bottom: 20px; right: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-muted); z-index: 1000; }
+.slide-counter strong { color: var(--text-primary); }
+.slide-closing { text-align: center; }
+.slide-closing h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+.refs { margin-top:16px; padding:10px 14px; background:#1e293b; border-radius:8px; font-size:0.72rem; color:#94a3b8; line-height:1.6; }
+.refs a { color:#60a5fa; text-decoration:none; } .refs a:hover { text-decoration:underline; }
+@keyframes flowRight1 {
+  0% { left: 0; opacity: 1; }
+  50% { left: 50%; opacity: 0.5; }
+  100% { left: 100%; opacity: 0; }
+}
+@keyframes flowRight2 {
+  0% { left: 0; opacity: 1; }
+  50% { left: 50%; opacity: 0.5; }
+  100% { left: 100%; opacity: 0; }
+}
+@keyframes flowRight3 {
+  0% { left: 0; opacity: 1; }
+  50% { left: 50%; opacity: 0.5; }
+  100% { left: 100%; opacity: 0; }
+}
+@media (max-width: 767px) { .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;} .two-col{grid-template-columns:1fr;} .flow{flex-direction:column;} .flow-arrow{transform:rotate(90deg);} .nav-dots{display:none;} }
+@media (max-height: 700px) { .slide { padding: 24px 20px; } }
+@media (prefers-reduced-motion: reduce) { .reveal,.stagger>*{opacity:1;transform:none;transition:none;} html{scroll-behavior:auto;} .flow-arrow-animated{animation:none!important;} }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="slide-counter" id="counter"><strong>01</strong> / 24</div>
+
+<!-- Title -->
+<section class="slide slide-title">
+  <div class="eyebrow">W9 · Buổi sáng</div>
+  <h1>GitOps &amp; <span class="gradient-text">CI/CD</span></h1>
+  <div class="meta-chips">
+    <div class="chip"><strong>Buổi sáng</strong> GitOps &amp; CI/CD + Lab</div>
+    <div class="chip"><strong>Công cụ</strong> ArgoCD + GitHub</div>
+  </div>
+</section>
+<!-- ===== Section divider 01 ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">01</div>
+  <div class="section-label">Vấn đề thực tế</div>
+  <h2>Vấn đề thực tế khi <span class="gradient-text">vận hành</span> k8s</h2>
+  <p class="lead">kubectl apply thì dễ. Vận hành thật thì sập.<br>Không có single source of truth.<br>Không có lịch sử, không audit được.</p>
+</section>
+
+<!-- Problem -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Vấn đề thực tế</div><h2>Deploy tay từ local</h2><p class="lead"><code>kubectl apply</code> thì dễ. Vận hành thật thì sập. <span style="color:var(--brand-accent);font-weight:700;">Tại sao?</span></p></div>
+    <div class="grid grid-2 reveal stagger">
+      <div class="card"><h3 style="display:flex;align-items:center;"><span style="display:inline-flex;align-items:center;justify-content:center;width:1.8em;height:1.8em;border-radius:50%;border:1.5px solid rgba(30,41,59,0.3);font-size:0.7em;margin-right:8px;flex-shrink:0;">1</span>Không ghi lại state</h3><p>Developer kubectl từ laptop → không ai biết cụm đang chạy gì.</p><p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Bạn deploy v2.5 lúc 3h chiều. 3 ngày sau sếp hỏi: "Prod chạy version nào?" — không nhớ.</p></div>
+      <div class="card"><h3 style="display:flex;align-items:center;"><span style="display:inline-flex;align-items:center;justify-content:center;width:1.8em;height:1.8em;border-radius:50%;border:1.5px solid rgba(30,41,59,0.3);font-size:0.7em;margin-right:8px;flex-shrink:0;">2</span>Nhầm context</h3><p>Lệnh đúng nhưng sai cụm → xóa nhầm prod.</p><p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Junior nghĩ đang ở DEV, gõ <code>kubectl delete deployment</code>. Nhìn lại: context = PROD.</p></div>
+      <div class="card"><h3 style="display:flex;align-items:center;"><span style="display:inline-flex;align-items:center;justify-content:center;width:1.8em;height:1.8em;border-radius:50%;border:1.5px solid rgba(30,41,59,0.3);font-size:0.7em;margin-right:8px;flex-shrink:0;">3</span>Không rollback được</h3><p>"Về như hôm qua" — nhưng "hôm qua" là cấu hình nào? Không có ảnh chụp để quay về.</p><p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;"><code>kubectl rollout undo</code> chỉ lưu 10 revisions, không có message. History chỉ có số, không biết "version này làm gì".</p></div>
+      <div class="card"><h3 style="display:flex;align-items:center;"><span style="display:inline-flex;align-items:center;justify-content:center;width:1.8em;height:1.8em;border-radius:50%;border:1.5px solid rgba(30,41,59,0.3);font-size:0.7em;margin-right:8px;flex-shrink:0;">4</span>Credential cũ còn</h3><p>Người nghỉ việc vẫn giữ kubeconfig → rủi ro.</p><p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Bạn A nghỉ. File kubeconfig của A vẫn hoạt động → vô tình hoặc cố ý vẫn apply được vào cụm.</p></div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:16px; max-width:880px; margin-left:auto;margin-right:auto;"><p style="font-size:0.9rem;"><strong>Gốc rễ:</strong> Với deploy tay, không có <strong style="color:var(--brand-accent);">"single source of truth"</strong> — không biết cụm đang chạy gì, ai đổi, đổi lúc nào.</p></div>
+  </div>
+  <div class="slide-footer"><span>01 — Vấn đề thực tế</span></div>
+</section>
+
+
+<!-- ===== Section divider 02 ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">02</div>
+  <div class="section-label">GitOps &amp; CI/CD</div>
+  <h2>Hiểu về <span class="gradient-text">concept</span> của GitOps</h2>
+  <p class="lead">Quản lý file cấu hình (manifest) trên Git.<br>Agent của ArgoCD hỗ trợ việc tự động triển khai applications.<br>Không kubectl tay</p>
+</section>
+
+<!-- git source of truth — 4 nguyên tắc (table có ví dụ) -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Khái niệm</div><h2>4 nguyên tắc OpenGitOps</h2><p class="lead">Git = nguồn sự thật duy nhất (single source of truth)</p></div>
+    <div class="reveal">
+      <table>
+        <thead><tr><th style="width:20%;">Nguyên tắc</th><th style="width:35%;">Giải thích</th><th style="width:45%;">Ví dụ minh họa</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--text-primary)">1. Declarative</strong></td>
+            <td>Khai báo "muốn gì" (desired state), không viết các bước "làm thế nào"</td>
+            <td>Viết <code>replicas: 3</code> (muốn 3 pods)<br>Thay vì viết script: "tạo pod 1, đợi ready, tạo pod 2..."</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--text-primary)">2. Versioned</strong></td>
+            <td>Mọi thay đổi lưu trong Git, có lịch sử đầy đủ</td>
+            <td><code>git log</code> xem ai đổi, lúc nào, đổi gì.<br>Rollback = <code>git revert</code> (có audit trail)</td>
+          </tr>
+          <tr style="background:rgba(59,130,246,0.06);">
+            <td><strong style="color:var(--brand-secondary)">3. Pulled</strong></td>
+            <td>Agent <strong>trong cụm</strong> tự kéo từ Git ra. Không ai push từ ngoài vào</td>
+            <td>ArgoCD (chạy trong cụm) poll repo mỗi 3 phút.<br>Developer không cần kubeconfig của prod → an toàn hơn</td>
+          </tr>
+          <tr style="background:rgba(245,158,11,0.05);">
+            <td><strong style="color:var(--brand-accent)">4. Reconciled</strong></td>
+            <td>Liên tục so sánh Git vs cụm thật. Nếu lệch → tự động sửa về như Git</td>
+            <td>Git: <code>replicas: 3</code>. Bạn <code>kubectl scale 5</code> → 5 pods.<br>ArgoCD phát hiện: "Git nói 3 mà!" → tự scale về 3.<br><em>Giống ReplicaSet reconcile, nhưng source = Git</em></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card card-dark reveal" style="margin-top:16px; max-width:880px;"><p style="color:#e2e8f0;font-size:0.88rem;"><strong style="color:var(--brand-accent)">Model:</strong> Git = bản thiết kế; ArgoCD = thợ sửa cụm cho khớp. Reconcile loop giống HPA, nhưng desired từ Git.</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- Architecture Overview -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Kiến trúc</div><h2>Kiến trúc GitOps tổng quan</h2><p class="lead">Developer → Git → ArgoCD → Kubernetes</p></div>
+    <div class="reveal" style="max-width:1000px;margin:0 auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:40px 20px;position:relative;">
+
+        <!-- Developer -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;box-shadow:0 4px 20px rgba(59,130,246,0.3);">👨‍💻</div>
+          <div style="margin-top:12px;font-weight:700;color:var(--text-primary);">Developer</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);">Push YAML</div>
+        </div>
+
+        <!-- Arrow 1 -->
+        <div style="flex:0 0 80px;position:relative;height:2px;background:var(--brand-accent);">
+          <div class="flow-arrow-animated" style="position:absolute;left:0;top:50%;width:8px;height:8px;border-radius:50%;background:var(--brand-accent);transform:translateY(-50%);animation:flowRight1 2s ease-in-out infinite;"></div>
+          <div style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:8px solid var(--brand-accent);border-top:5px solid transparent;border-bottom:5px solid transparent;"></div>
+        </div>
+
+        <!-- Git Repository -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="padding:20px 30px;border:2px solid var(--brand-accent);border-radius:12px;background:rgba(245,158,11,0.05);box-shadow:0 4px 20px rgba(245,158,11,0.2);">
+            <div style="width:50px;height:50px;margin:0 auto 8px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><g fill="#181616"><path fill-rule="evenodd" clip-rule="evenodd" d="M64 5.103c-33.347 0-60.388 27.035-60.388 60.388 0 26.682 17.303 49.317 41.297 57.303 3.017.56 4.125-1.31 4.125-2.905 0-1.44-.056-6.197-.082-11.243-16.8 3.653-20.345-7.125-20.345-7.125-2.747-6.98-6.705-8.836-6.705-8.836-5.48-3.748.413-3.67.413-3.67 6.063.425 9.257 6.223 9.257 6.223 5.386 9.23 14.127 6.562 17.573 5.02.542-3.903 2.107-6.568 3.834-8.076-13.413-1.525-27.514-6.704-27.514-29.843 0-6.593 2.36-11.98 6.223-16.21-.628-1.52-2.695-7.662.584-15.98 0 0 5.07-1.623 16.61 6.19C53.7 35 58.867 34.327 64 34.304c5.13.023 10.3.694 15.127 2.033 11.526-7.813 16.59-6.19 16.59-6.19 3.287 8.317 1.22 14.46.593 15.98 3.872 4.23 6.215 9.617 6.215 16.21 0 23.194-14.127 28.3-27.574 29.796 2.167 1.874 4.097 5.55 4.097 11.183 0 8.08-.07 14.583-.07 16.572 0 1.607 1.088 3.49 4.148 2.897 23.98-7.994 41.263-30.622 41.263-57.294C124.388 32.14 97.35 5.104 64 5.104z"/><path d="M26.484 91.806c-.133.3-.605.39-1.035.185-.44-.196-.685-.605-.543-.906.13-.31.603-.395 1.04-.188.44.197.69.61.537.91zm2.446 2.729c-.287.267-.85.143-1.232-.28-.396-.42-.47-.983-.177-1.254.298-.266.844-.14 1.24.28.394.426.472.984.17 1.255zM31.312 98.012c-.37.258-.976.017-1.35-.52-.37-.538-.37-1.183.01-1.44.373-.258.97-.025 1.35.507.368.545.368 1.19-.01 1.452zm3.261 3.361c-.33.365-1.036.267-1.552-.23-.527-.487-.674-1.18-.343-1.544.336-.366 1.045-.264 1.564.23.527.486.686 1.18.333 1.543zm4.5 1.951c-.147.473-.825.688-1.51.486-.683-.207-1.13-.76-.99-1.238.14-.477.823-.7 1.512-.485.683.206 1.13.756.988 1.237zm4.943.361c.017.498-.563.91-1.28.92-.723.017-1.308-.387-1.315-.877 0-.503.568-.91 1.29-.924.717-.013 1.306.387 1.306.88zm4.598-.782c.086.485-.413.984-1.126 1.117-.7.13-1.35-.172-1.44-.653-.086-.498.422-.997 1.122-1.126.714-.123 1.354.17 1.444.663zm0 0"/></g></svg></div>
+            <div style="font-weight:700;color:var(--text-primary);">Git</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Source of Truth</div>
+          </div>
+        </div>
+
+        <!-- Arrow 2 -->
+        <div style="flex:0 0 80px;position:relative;height:2px;background:var(--brand-accent);">
+          <div class="flow-arrow-animated" style="position:absolute;left:0;top:50%;width:8px;height:8px;border-radius:50%;background:var(--brand-accent);transform:translateY(-50%);animation:flowRight2 2s ease-in-out infinite;animation-delay:0.5s;"></div>
+          <div style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:8px solid var(--brand-accent);border-top:5px solid transparent;border-bottom:5px solid transparent;"></div>
+        </div>
+
+        <!-- ArgoCD Agent -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="padding:20px 30px;border:2px solid #22c55e;border-radius:12px;background:rgba(34,197,94,0.05);box-shadow:0 4px 20px rgba(34,197,94,0.2);">
+            <div style="width:50px;height:50px;margin:0 auto 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128"><defs><clipPath id="argocd-original-e"><path d="M42 41h44v51H42zm0 0"/></clipPath><clipPath id="argocd-original-d"><path d="M0 0h128v128H0z"/></clipPath><clipPath id="argocd-original-c"><path d="M0 0h128v128H0z"/></clipPath><clipPath id="argocd-original-f"><path d="M85.695 41.133l-2.55 58.238H44.887l-2.125-58.238"/></clipPath><clipPath id="argocd-original-b"><path d="M0 0h128v128H0z"/></clipPath><mask id="argocd-original-l"><g filter="url(#argocd-original-a)"><path d="M0 0h128v128H0z" fill-opacity=".251"/></g></mask><mask id="argocd-original-h"><g filter="url(#argocd-original-a)"><path d="M0 0h128v128H0z" fill-opacity=".22"/></g></mask><mask id="argocd-original-j"><g filter="url(#argocd-original-a)"><path d="M0 0h128v128H0z" fill-opacity=".502"/></g></mask><g id="argocd-original-i" clip-path="url(#argocd-original-b)"><path d="M58.488 30.508a2.974 2.974 0 11-5.948-.003 2.974 2.974 0 015.948.003zm0 0" fill="#fbdfc3"/></g><g id="argocd-original-g" clip-path="url(#argocd-original-c)"><path d="M84.422 65.363s2.55-22.531-.852-31.031C77.195 19.453 62.316 20.73 62.316 20.73s8.5 3.399 8.926 16.153c.426 8.926 0 22.105 0 22.105zm0 0" fill="#e34e3b"/></g><g id="argocd-original-k" clip-path="url(#argocd-original-d)"><path d="M83.145 90.867V87.47c-5.95 3.398-12.329 6.8-19.977 6.8-8.504 0-14.031-3.824-19.555-6.8l.422 3.398s6.38 6.805 19.555 6.805c12.328-.426 19.555-6.805 19.555-6.805zm0 0" fill="#e9654b"/></g><filter id="argocd-original-a" filterUnits="objectBoundingBox" x="0%" y="0%" width="100%" height="100%"><feColorMatrix in="SourceGraphic" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter></defs><path d="M44.035 89.594s-.847 2.55-2.125 3.824a3.844 3.844 0 01-2.972 1.277 49.946 49.946 0 01-6.38 1.274s2.977.426 6.38.851c1.273 0 1.273 0 2.124.426 2.126 0 2.973-1.277 2.973-1.277zm39.11 0s.851 2.55 2.125 3.824a3.858 3.858 0 002.976 1.277 49.8 49.8 0 006.375 1.274s-2.973.426-6.8.851c-1.274 0-1.274 0-2.126.426-2.55 0-2.976-1.277-2.976-1.277zm0 0" fill="#e9654b"/><path d="M109.926 47.508c0 25.355-20.555 45.91-45.91 45.91-25.356 0-45.91-20.555-45.91-45.91 0-25.352 20.554-45.906 45.91-45.906 25.355 0 45.91 20.554 45.91 45.906zm0 0" fill="#b6cfea"/><path d="M108.227 47.508c0 24.418-19.793 44.21-44.211 44.21-24.414 0-44.207-19.792-44.207-44.21C19.809 23.094 39.602 3.3 64.016 3.3c24.418 0 44.21 19.793 44.21 44.207zm0 0" fill="#e6f5f8"/><path d="M100.148 48.36c0 19.956-16.175 36.132-36.132 36.132-19.954 0-36.133-16.176-36.133-36.133 0-19.953 16.18-36.132 36.133-36.132 19.957 0 36.132 16.18 36.132 36.132zm0 0" fill="#d0e8f0"/><path d="M42.762 65.363s2.976 48.035 2.976 48.887c0 .422.426 1.273-1.703 2.125-2.125.848-8.926 2.55-8.926 2.55h10.203c4.676 0 4.676-3.827 4.676-4.675 0-.852 1.274-19.129 1.274-19.129s.425 21.68.425 22.527c0 .852-.425 2.125-3.398 2.977-2.125.426-8.504 1.7-8.504 1.7h9.778c5.953 0 5.953-3.825 5.953-3.825l1.273-19.129s.426 19.129.426 21.254c0 1.7-1.274 2.977-5.953 3.824-2.973.852-6.801 1.703-6.801 1.703h11.055c5.523-.425 6.375-4.254 6.375-4.254l9.351-47.609zm0 0" fill="#ee794b"/><path d="M85.27 65.363s-2.973 48.035-2.973 48.887c0 .422-.426 1.273 1.7 2.125 2.124.848 8.925 2.55 8.925 2.55H82.719c-4.676 0-4.676-3.827-4.676-4.675 0-.852-1.273-19.129-1.273-19.129s-.426 21.68-.426 22.527c0 .852.426 2.125 3.402 2.977l8.5 1.7H78.47c-5.95 0-5.95-3.825-5.95-3.825l-1.277-19.129s-.426 19.129-.426 21.254c0 1.7 1.278 2.977 5.954 3.824 2.976.852 6.8 1.703 6.8 1.703H72.52c-5.528-.425-6.38-4.254-6.38-4.254L56.79 74.29zm.425-23.379c0 11.903-9.777 21.254-21.254 21.254-11.476 0-21.254-9.777-21.254-21.254 0-11.476 9.778-21.254 21.254-21.254 11.477 0 21.254 9.352 21.254 21.254zm0 0" fill="#ee794b"/><g clip-path="url(#argocd-original-e)"><g clip-path="url(#argocd-original-f)"><path d="M102.273 53.46c0 20.895-16.937 37.833-37.832 37.833-20.894 0-37.832-16.938-37.832-37.832 0-20.895 16.938-37.832 37.832-37.832 20.895 0 37.832 16.937 37.832 37.832zm0 0" fill="#ee794b"/></g></g><use xlink:href="#argocd-original-g" mask="url(#argocd-original-h)"/><use xlink:href="#argocd-original-i" mask="url(#argocd-original-j)"/><path d="M71.668 73.863c0 7.227-3.402 11.907-7.652 11.907s-7.653-5.528-7.653-12.754c0 0 3.403 6.8 8.078 6.8 4.676 0 7.227-5.953 7.227-5.953zm0 0" fill="#010101"/><path d="M71.668 73.863c0 4.68-3.402 7.227-7.652 7.227s-7.227-3.399-7.227-7.649c0 0 3.402 4.25 8.078 4.25 4.676 0 6.801-3.828 6.801-3.828zm0 0" fill="#fff"/><path d="M92.07 53.887c0 7.277-5.898 13.175-13.175 13.175-7.278 0-13.18-5.898-13.18-13.175 0-7.278 5.902-13.18 13.18-13.18 7.277 0 13.175 5.902 13.175 13.18zm-29.754 0c0 7.277-5.902 13.175-13.18 13.175-7.277 0-13.175-5.898-13.175-13.175 0-7.278 5.898-13.18 13.176-13.18 7.277 0 13.18 5.902 13.18 13.18zm0 0" fill="#e9654b"/><path d="M89.098 53.887c0 5.633-4.57 10.203-10.203 10.203-5.633 0-10.204-4.57-10.204-10.203 0-5.637 4.57-10.203 10.204-10.203 5.632 0 10.203 4.566 10.203 10.203zm-30.61 0c0 5.633-4.566 10.203-10.199 10.203-5.637 0-10.203-4.57-10.203-10.203a10.201 10.201 0 0110.203-10.203c5.633 0 10.2 4.566 10.2 10.203zm0 0" fill="#fff"/><path d="M51.262 52.61a2.975 2.975 0 11-5.95.003 2.975 2.975 0 015.95-.004zm30.609 0a2.976 2.976 0 11-5.951.001 2.976 2.976 0 015.951-.002zm0 0" fill="#010101"/><path d="M17.258 58.988a2.005 2.005 0 01-2.125-2.125V39.86a2.008 2.008 0 01.582-1.543 2.008 2.008 0 011.543-.582 2.005 2.005 0 012.125 2.125v17.004c.035.57-.18 1.133-.586 1.54a2.008 2.008 0 01-1.54.585zm92.668 0a2.003 2.003 0 01-1.54-.586 2.008 2.008 0 01-.585-1.539V39.86a2.011 2.011 0 01.586-1.543 2 2 0 011.539-.582 2 2 0 011.539.582c.41.407.62.97.586 1.543v17.004a1.994 1.994 0 01-.586 1.54 2.003 2.003 0 01-1.54.585zm0 0" fill="#b6cfea"/><path d="M51.688 13.504a2.125 2.125 0 11-4.25 0 2.125 2.125 0 014.25 0zM34.262 70.89a1.559 1.559 0 01-1.278-.425c-5.101-6.375-7.652-14.453-7.652-22.531a37.933 37.933 0 015.102-19.13 41.641 41.641 0 0113.601-13.6 1.873 1.873 0 012.13.425 1.874 1.874 0 01-.427 2.125 34.305 34.305 0 00-17.43 29.754 33.487 33.487 0 007.227 20.832c.426.426.426 1.7-.426 2.125-.425.426-.425.426-.847.426zm0 0" fill="#fff"/><use xlink:href="#argocd-original-k" mask="url(#argocd-original-l)"/></svg>
+            </div>
+            <div style="font-weight:700;color:var(--text-primary);">ArgoCD</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Auto Sync</div>
+          </div>
+        </div>
+
+        <!-- Arrow 3 -->
+        <div style="flex:0 0 80px;position:relative;height:2px;background:var(--brand-accent);">
+          <div class="flow-arrow-animated" style="position:absolute;left:0;top:50%;width:8px;height:8px;border-radius:50%;background:var(--brand-accent);transform:translateY(-50%);animation:flowRight3 2s ease-in-out infinite;animation-delay:1s;"></div>
+          <div style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:8px solid var(--brand-accent);border-top:5px solid transparent;border-bottom:5px solid transparent;"></div>
+        </div>
+
+        <!-- Kubernetes Cluster -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="padding:20px 30px;border:2px solid #3b82f6;border-radius:12px;background:rgba(59,130,246,0.05);box-shadow:0 4px 20px rgba(59,130,246,0.2);">
+            <div style="width:50px;height:50px;margin:0 auto 8px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><g fill="#486bb3"><path d="M56.484 55.098c.37.27.82.43 1.31.43 1.2 0 2.18-.95 2.23-2.13l.05-.03.75-13.26c-.9.11-1.8.26-2.7.46-4.93 1.12-9.2 3.55-12.54 6.83l10.87 7.71.03-.01zM55.034 74.528a2.218 2.218 0 00-2.58-1.69l-.02-.03-13.05 2.21a26.15 26.15 0 0010.51 13.15l5.06-12.22-.04-.05c.17-.42.23-.89.12-1.37zM50.694 65.118c.44-.12.85-.38 1.16-.76.75-.94.62-2.29-.28-3.07l.01-.05-9.93-8.88a26.07 26.07 0 00-3.7 16.48l12.73-3.67.01-.05zM60.334 69.018l3.66 1.76 3.66-1.75.9-3.95-2.53-3.16h-4.06l-2.54 3.16zM67.934 53.348c.02.46.18.91.49 1.29.75.94 2.1 1.11 3.06.41l.04.02 10.8-7.66c-4.08-3.99-9.4-6.6-15.15-7.3l.75 13.24h.01zM75.514 72.778c-.17-.03-.34-.05-.51-.04-.29.01-.58.09-.85.22a2.23 2.23 0 00-1.08 2.89l-.02.02 5.11 12.34c4.93-3.14 8.61-7.83 10.54-13.24l-13.16-2.23-.03.04zM65.954 79.318a2.246 2.246 0 00-2.04-1.17c-.77.03-1.5.46-1.89 1.18h-.01l-6.42 11.6a26.16 26.16 0 0014.27.73c.88-.2 1.74-.44 2.57-.72l-6.43-11.63h-.05z"/><path d="M124.544 76.788l-10.44-45.33a8.012 8.012 0 00-4.37-5.43l-42.24-20.18a8.157 8.157 0 00-3.92-.78 8.15 8.15 0 00-3.1.78l-42.24 20.18a8.055 8.055 0 00-4.37 5.43l-10.41 45.34a7.92 7.92 0 001.1 6.14c.14.22.3.43.46.64l29.24 36.35a8.087 8.087 0 006.32 3.01l46.89-.01c2.46 0 4.78-1.11 6.32-3.01l29.23-36.36a7.981 7.981 0 001.53-6.77zm-16.07-.55c-.31 1.35-1.76 2.17-3.26 1.85-.01 0-.03 0-.04-.01-.02 0-.03-.01-.05-.02-.21-.05-.47-.09-.65-.14-.86-.23-1.49-.58-2.27-.88-1.67-.6-3.06-1.1-4.41-1.3-.69-.05-1.04.27-1.42.52-.18-.04-.75-.14-1.08-.19-2.42 7.61-7.58 14.21-14.57 18.33.12.29.33.91.42 1.02-.16.43-.4.83-.19 1.49.49 1.27 1.28 2.52 2.24 4.01.46.69.94 1.22 1.36 2.02.1.19.23.48.33.68.65 1.39.17 2.99-1.08 3.59-1.26.61-2.82-.03-3.5-1.43-.1-.2-.23-.46-.31-.65-.36-.82-.48-1.52-.73-2.32-.57-1.68-1.05-3.07-1.73-4.25-.39-.57-.86-.64-1.29-.78-.08-.14-.38-.69-.54-.97-1.4.53-2.84.97-4.34 1.31-6.56 1.49-13.13.89-18.99-1.37l-.57 1.04c-.43.11-.84.23-1.09.53-.92 1.1-1.29 2.86-1.96 4.54-.25.79-.37 1.5-.73 2.32-.08.19-.22.45-.31.64v.01l-.01.01c-.67 1.39-2.23 2.03-3.49 1.43-1.25-.6-1.72-2.2-1.08-3.59.1-.2.22-.49.32-.68.42-.79.89-1.33 1.36-2.02.96-1.5 1.8-2.84 2.29-4.11.12-.42-.06-1-.22-1.43l.46-1.1c-6.73-3.99-12.04-10.34-14.58-18.21l-1.1.19c-.3-.17-.89-.56-1.45-.51-1.35.2-2.74.7-4.41 1.3-.78.3-1.4.64-2.27.87-.18.05-.44.1-.65.15-.02 0-.03.01-.05.02-.01 0-.03 0-.04.01-1.5.32-2.95-.5-3.26-1.85-.31-1.35.65-2.72 2.14-3.08.01 0 .03-.01.04-.01.01 0 .01 0 .02-.01.21-.05.48-.12.68-.16.88-.17 1.6-.13 2.43-.19 1.77-.19 3.23-.34 4.53-.75.41-.17.81-.74 1.09-1.1l1.06-.31c-1.19-8.22.82-16.28 5.16-22.81l-.81-.72c-.05-.32-.12-1.04-.51-1.46-.99-.93-2.25-1.71-3.76-2.64-.72-.42-1.38-.69-2.1-1.23-.15-.11-.36-.29-.52-.42-.01-.01-.03-.02-.04-.03-1.21-.97-1.49-2.64-.62-3.73.49-.61 1.24-.92 2.01-.89.6.02 1.23.24 1.76.66.17.14.41.32.56.45.68.58 1.09 1.16 1.66 1.77 1.25 1.27 2.28 2.32 3.41 3.08.59.35 1.05.21 1.5.15.15.11.63.46.91.65 4.3-4.57 9.96-7.95 16.52-9.44 1.53-.35 3.05-.58 4.57-.7l.06-1.07c.34-.33.71-.79.82-1.31.11-1.36-.07-2.82-.28-4.59-.12-.82-.31-1.51-.35-2.4-.01-.18 0-.44.01-.65 0-.02-.01-.05-.01-.07 0-1.55 1.13-2.81 2.53-2.81s2.53 1.26 2.53 2.81c0 .22.01.52.01.72-.03.89-.23 1.58-.35 2.4-.21 1.76-.4 3.23-.29 4.59.1.68.5.95.83 1.26.01.18.04.79.06 1.13 8.04.71 15.5 4.39 20.99 10.14l.96-.69c.33.02 1.04.12 1.53-.17 1.13-.76 2.16-1.82 3.41-3.08.57-.61.99-1.18 1.67-1.77.15-.13.39-.31.56-.45 1.21-.97 2.9-.86 3.77.23s.59 2.76-.62 3.73c-.17.14-.39.33-.56.45-.72.53-1.38.8-2.1 1.23-1.51.93-2.77 1.71-3.76 2.64-.47.5-.43.98-.48 1.43-.14.13-.63.57-.9.8a32.75 32.75 0 014.74 10.95c.92 3.99 1.06 7.97.53 11.8l1.02.3c.18.26.56.89 1.09 1.1 1.3.41 2.76.56 4.53.75.83.07 1.55.03 2.43.19.21.04.52.12.73.17 1.5.37 2.45 1.74 2.14 3.09z"/><path d="M86.274 52.358l-9.88 8.84.01.03c-.34.3-.6.7-.71 1.18-.27 1.17.44 2.33 1.58 2.65l.01.05 12.79 3.68c.27-2.76.11-5.62-.55-8.48-.66-2.89-1.77-5.56-3.25-7.95z"/></g></svg></div>
+            <div style="font-weight:700;color:var(--text-primary);">Kubernetes</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Pods Running</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:20px;max-width:900px;margin-left:auto;margin-right:auto;">
+      <p style="font-size:0.88rem;"><strong>Flow:</strong> Developer push manifest → Git lưu → ArgoCD detect → Apply vào K8s → Pods chạy. <strong>Không kubectl tay.</strong></p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>02 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- Điều gì xảy ra khi git push (flow code-block kiểu W8) -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">End to End</div><h2>Điều gì xảy ra khi bạn <code>git push</code> một thay đổi?</h2></div>
+    <div class="reveal">
+      <div class="code-block"><span class="cmt"># 1. Bạn sửa replicas 2 -&gt; 4, rồi commit + push lên GitHub</span>
+git commit -am <span class="str">"frontend 2-&gt;4"</span> &amp;&amp; git push
+       <span class="kw">↓</span>
+<span class="cmt"># 2. ArgoCD (trong cụm) poll repo / nhận webhook -&gt; thấy commit mới</span>
+<span class="cmt"># 3. repo-server kéo manifest mới về và render</span>
+<span class="cmt"># 4. application-controller so: Git nói 4, cụm đang 2 -&gt; OutOfSync</span>
+<span class="cmt"># 5. auto-sync: apply Deployment(replicas=4) vào namespace demo</span>
+<span class="cmt"># 6. K8s tạo thêm 2 Pod -&gt; 4 Pod. ArgoCD -&gt; Synced / Healthy</span></div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:16px; max-width:860px;"><p style="font-size:0.88rem;"><strong>Khác biệt:</strong> Không chạm cụm. Chỉ chạm Git. ArgoCD làm còn lại. Có độ trễ (vài phút) — trade-off của Pull. Đổi lại: an toàn + tự động.</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- ===== Section divider 03 ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">03</div>
+  <div class="section-label">ArgoCD Deep Dive</div>
+  <h2>Các khái niệm <span class="gradient-text">quan trọng</span> của ArgoCD</h2>
+  <p class="lead">Hiểu rõ để vận hành tốt</p>
+</section>
+
+<!-- ArgoCD Application (object slide kiểu W8 Pod) -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Đối tượng cốt lõi</div><h2>Application — "chỉ dẫn" cho ArgoCD</h2><p class="lead">CRD ở ns <code>argocd</code>, trỏ tới app.</p></div>
+    <div class="two-col reveal">
+      <div>
+        <div class="code-block"><span class="kw">apiVersion:</span> argoproj.io/v1alpha1
+<span class="kw">kind:</span> Application
+<span class="kw">metadata:</span>
+  <span class="kw">name:</span> platform
+  <span class="kw">namespace:</span> argocd
+<span class="kw">spec:</span>
+  <span class="kw">source:</span>                      <span class="cmt"># Ở ĐÂU?</span>
+    <span class="kw">repoURL:</span> <span class="str">https://github.com/&lt;ban&gt;/gitops.git</span>
+    <span class="kw">targetRevision:</span> main      <span class="cmt"># branch nào</span>
+    <span class="kw">path:</span> k8s                 <span class="cmt"># thư mục nào</span>
+  <span class="kw">destination:</span>                 <span class="cmt"># Apply vào ĐÂU?</span>
+    <span class="kw">namespace:</span> demo
+    <span class="kw">server:</span> https://kubernetes.default.svc
+  <span class="kw">syncPolicy:</span>                  <span class="cmt"># Tự động sync?</span>
+    <span class="kw">automated:</span>
+      <span class="kw">prune:</span> <span class="kw">true</span>           <span class="cmt"># xóa nếu xóa khỏi Git</span>
+      <span class="kw">selfHeal:</span> <span class="kw">true</span>        <span class="cmt"># tự sửa nếu ai đó edit tay</span></div>
+      </div>
+      <div class="stagger">
+        <div class="card" style="margin-bottom:12px;"><h3>Đọc trường</h3>
+          <ul class="bullets">
+            <li><strong>source</strong> = Desired ở đâu (repo + branch + path)</li>
+            <li><strong>destination</strong> = Apply vào đâu (ns + cluster)</li>
+            <li><strong>syncPolicy</strong> = Tự động sync? (prune + selfHeal)</li>
+          </ul>
+        </div>
+        <div class="card card-accent"><h3>Lưu ý</h3><p>Application sống ở ns <code>argocd</code>. App thật (Pod) ở ns <code>demo</code>. Application = metadata, không phải app.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- sync / heal / prune (table có ví dụ) + Synced != Healthy -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">prune / heal / drift</div><h2>3 hoạt động của ArgoCD</h2></div>
+    <div class="reveal">
+      <table>
+        <thead><tr><th>Động từ</th><th>Nghĩa</th><th>Ví dụ cụ thể</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--text-primary)">1. Sync</strong></td><td>Đưa cụm về khớp Git</td><td>Git thêm Deployment → ArgoCD apply vào cụm</td></tr>
+          <tr style="background:rgba(245,158,11,0.05);"><td><strong style="color:var(--brand-accent)">2. Self-Heal</strong><br><span style="font-size:0.72rem;color:var(--text-muted)">drift remediation</span></td><td>Sửa tay làm lệch Git → kéo về Git</td><td>Git: 3 pods. <code>kubectl scale 5</code> → 5 pods. ArgoCD check: "Git nói 3" → scale về 3. Không thể làm liều. Muốn đổi cụm → qua Git.</td></tr>
+          <tr><td><strong style="color:var(--text-primary)">3. Prune</strong></td><td>Xóa khỏi Git → xóa khỏi cụm</td><td>Xóa file <code>networkpolicy.yaml</code> → ArgoCD xóa NetworkPolicy. Mặc định tắt. Bật <code>prune: true</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warn reveal" style="margin-top:16px; max-width:880px;"><strong>Lưu ý: Synced ≠ Healthy</strong><br>ArgoCD có 2 status:<br>• <strong>Synced</strong> = Cụm khớp Git? So YAML Git vs cụm. Khớp ✅ / Lệch ❌<br>• <strong>Healthy</strong> = Resource chạy tốt? Check Pod status. Running ✅ / Lỗi ❌<br><strong>VD:</strong> Push <code>image: v2</code> (lỗi) → ArgoCD apply OK → Synced ✅. Pod crash → Degraded ❌</div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- Tại sao cần app-of-apps -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Vấn đề</div><h2>Tại sao cần app-of-apps?</h2><p class="lead">So sánh: Thêm app thủ công vs Tự động</p></div>
+    <div class="grid grid-2 reveal stagger">
+      <div class="card">
+        <h3 style="color:var(--text-muted);">❌ Không dùng app-of-apps</h3>
+        <ul class="bullets">
+          <li>Thêm app mới = phải <code>kubectl apply</code> Application thủ công</li>
+          <li>Có 10 app → phải apply 10 lần</li>
+          <li>Không GitOps 100% (Application vẫn apply tay)</li>
+          <li>Quên apply → app không xuất hiện</li>
+        </ul>
+      </div>
+      <div class="card card-accent">
+        <h3 style="color:var(--brand-accent);">✅ Dùng app-of-apps</h3>
+        <ul class="bullets">
+          <li>Apply <strong>root</strong> 1 lần duy nhất</li>
+          <li>Thêm app = tạo file YAML + push Git</li>
+          <li>ArgoCD tự phát hiện → tự tạo Application</li>
+          <li>GitOps 100%: Mọi thứ qua Git</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card card-dark reveal" style="margin-top:16px; max-width:880px;"><p style="color:#e2e8f0;font-size:0.88rem;"><strong style="color:var(--brand-accent);">Pattern:</strong> root Application (chỉ dẫn) → trỏ tới folder chứa nhiều Application con. Root tự tạo con. Giống Deployment tạo ReplicaSet, nhưng level cao hơn.</p></div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- app-of-apps -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Quản nhiều app</div><h2>app-of-apps — 1 root → nhiều app</h2><p class="lead">Apply root 1 lần → ra cả hệ thống. Thêm app = thêm file.</p></div>
+    <div class="two-col reveal">
+      <div>
+        <div class="code-block"><span class="cmt"># file: argocd/root.yaml</span>
+<span class="kw">apiVersion:</span> argoproj.io/v1alpha1
+<span class="kw">kind:</span> Application
+<span class="kw">metadata:</span>
+  <span class="kw">name:</span> root
+  <span class="kw">namespace:</span> argocd
+<span class="kw">spec:</span>
+  <span class="kw">source:</span>
+    <span class="kw">repoURL:</span> <span class="str">https://github.com/&lt;ban&gt;/gitops.git</span>
+    <span class="kw">targetRevision:</span> main
+    <span class="kw">path:</span> <span class="str">argocd/apps</span>      <span class="cmt"># &lt;- thư mục chứa các Application con</span>
+  <span class="kw">destination:</span>
+    <span class="kw">server:</span> https://kubernetes.default.svc
+    <span class="kw">namespace:</span> argocd
+  <span class="kw">syncPolicy:</span>
+    <span class="kw">automated:</span> { prune: <span class="kw">true</span>, selfHeal: <span class="kw">true</span> }
+<span class="cmt"># apply root 1 lần -&gt; tự tạo mọi App trong argocd/apps/</span></div>
+      </div>
+      <div class="stagger">
+        <div class="card" style="margin-bottom:12px;"><h3>Tại sao</h3><ul class="bullets"><li>Apply root 1 lần → ra hệ thống</li><li>Thêm app = file vào <code>argocd/apps/</code> + push</li><li>Tách nhóm component</li></ul></div>
+        <div class="card card-accent"><h3>Lưu ý</h3><p>root = Application, khác <code>path</code>: app thường → Deployment, root → Application.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- sync waves (flow + code + trap) -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Thứ tự apply</div><h2>sync waves — đúng trình tự</h2><p class="lead">Secret/Config trước → Deployment sau → Service cuối.</p></div>
+    <div class="flow reveal stagger" style="margin-bottom:16px;">
+      <div class="flow-step" style="border-color:var(--brand-secondary);"><div style="font-weight:800;color:var(--brand-secondary);">Secret</div><div style="font-size:0.72rem;color:var(--text-muted);">wave 0</div></div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step" style="border-color:var(--brand-accent);"><div style="font-weight:800;color:var(--brand-accent);">Deployment</div><div style="font-size:0.72rem;color:var(--text-muted);">wave 1</div></div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step" style="border-color:var(--brand-success);"><div style="font-weight:800;color:var(--brand-success);">Service</div><div style="font-size:0.72rem;color:var(--text-muted);">wave 2</div></div>
+    </div>
+    <div class="two-col reveal">
+      <div class="code-block"><span class="kw">metadata:</span>
+  <span class="kw">annotations:</span>
+    argocd.argoproj.io/sync-wave: <span class="str">"0"</span>
+<span class="cmt"># wave nhỏ chạy trước; ArgoCD đợi
+# wave trước Healthy mới sang wave sau</span></div>
+      <div class="warn"><strong>Thiếu wave:</strong> Deployment trước Config → pod lỗi <code>CreateContainerConfigError</code>. Wave đảm bảo thứ tự.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- rollback -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Rollback</div><h2><code>git revert</code></h2><p class="lead"><code>kubectl rollout undo</code> còn work?</p></div>
+    <div class="two-col reveal">
+      <div>
+        <h3 style="font-size:1rem;margin-bottom:8px;">Thí nghiệm tư duy:</h3>
+        <div class="code-block"><span class="cmt"># Scenario:</span>
+<span class="str">1. Git có image: backend:v2</span>
+<span class="str">2. ArgoCD sync → Cụm chạy v2</span>
+<span class="str">3. v2 bị lỗi, bạn chạy:</span>
+kubectl rollout undo deployment/backend
+<span class="str">4. Cụm rollback về v1</span>
+<span class="str">5. Vài phút sau... điều gì xảy ra?</span>
+
+<span class="cmt"># Đáp án:</span>
+<span class="kw">ArgoCD check:</span> Git nói v2, cụm đang v1
+  → <span class="out">OutOfSync</span>
+<span class="kw">Self-heal kick in:</span> Apply lại v2
+  → Cụm lại chạy v2 (version lỗi)
+  → <span class="out">Rollback THẤT BẠI ❌</span>
+
+<span class="cmt"># Nhớ nguyên tắc số 4: Reconciled.
+# Cụm phải khớp Git. kubectl rollback
+# vi phạm nguyên tắc này.</span></div>
+      </div>
+      <div>
+        <h3 style="font-size:1rem;margin-bottom:8px;color:var(--brand-success);">Cách đúng: <code>git revert</code></h3>
+        <div class="code-block"><span class="cmt"># Trong GitOps: Muốn đổi cụm → Đổi Git.
+# Kể cả rollback.</span>
+git revert HEAD --no-edit
+git push
+<span class="out"># ArgoCD phát hiện commit mới
+# → Sync cụm về version cũ</span></div>
+        <h3 style="font-size:0.9rem;margin:12px 0 8px;">So sánh:</h3>
+        <table style="font-size:0.78rem;">
+          <thead><tr><th></th><th><code>kubectl rollout undo</code></th><th><code>git revert</code></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Tác động</strong></td><td>Chỉ cụm</td><td>Git + Cụm</td></tr>
+            <tr><td><strong>Lịch sử</strong></td><td>Không (mất sau 10 revisions)</td><td>Có (Git history vĩnh viễn)</td></tr>
+            <tr><td><strong>Bị self-heal ghi đè</strong></td><td>✅ Có</td><td>❌ Không</td></tr>
+            <tr><td><strong>Audit trail</strong></td><td>Không biết ai rollback</td><td>Commit author + message</td></tr>
+            <tr><td><strong>Thời gian</strong></td><td>Ngay lập tức</td><td>1-3 phút (ArgoCD poll)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:16px; max-width:880px;"><p style="font-size:0.88rem;"><strong>Trade-off:</strong> Vài phút latency ↔ safety + traceability.</p></div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+
+<!-- CI plan-on-PR / apply-on-merge + branch protection -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">CI/CD</div><h2>plan-on-PR / apply-on-merge</h2><p class="lead">CI và CD tách bạch. CI validate, CD deploy.</p></div>
+    <div class="flow reveal stagger" style="margin-bottom:16px;">
+      <div class="flow-step"><div style="font-weight:800;">Mở PR</div><div style="font-size:0.72rem;color:var(--text-muted);">sửa replicas 2→100</div></div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step" style="border-color:var(--brand-secondary);"><div style="font-weight:800;color:var(--brand-secondary);">CI: plan (gác cổng)</div><div style="font-size:0.72rem;color:var(--text-muted);">validate YAML syntax</div></div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step"><div style="font-weight:800;">Review + merge</div><div style="font-size:0.72rem;color:var(--text-muted);">nếu CI ✅ xanh</div></div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step" style="border-color:var(--brand-success);"><div style="font-weight:800;color:var(--brand-success);">CD: apply</div><div style="font-size:0.72rem;color:var(--text-muted);">ArgoCD tự kéo</div></div>
+    </div>
+    <div class="two-col reveal">
+      <div>
+        <h3 style="font-size:0.95rem;margin-bottom:8px;">CI: Gác cổng (Plan on PR)</h3>
+        <div class="code-block"><span class="kw">on:</span> pull_request        <span class="cmt"># chạy khi mở PR</span>
+<span class="kw">jobs:</span>
+  validate:
+    steps:
+      - kubeconform -strict k8s/   <span class="cmt"># check YAML</span>
+<span class="cmt"># Nếu sai (vd: thiếu trường name)
+# → ❌ CI fail → Merge button disabled
+# Nếu đúng → ✅ CI pass → Reviewer approve</span>
+
+<span class="cmt"># KHÔNG có job 'deploy' trong CI
+# File .github/workflows/ chỉ có validate.yml</span></div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Giống compiler check syntax. Không cho YAML lỗi vào prod.</p>
+      </div>
+      <div>
+        <h3 style="font-size:0.95rem;margin-bottom:8px;">CD: Apply sau merge (ArgoCD)</h3>
+        <div class="code-block"><span class="cmt"># Sau khi PR được merge:</span>
+main branch updated
+      <span class="kw">↓</span>
+ArgoCD poll (3 phút) hoặc webhook (ngay)
+      <span class="kw">↓</span>
+ArgoCD: <span class="str">"Ồ, commit mới!"</span>
+      <span class="kw">↓</span>
+kubectl apply (tự động)
+      <span class="kw">↓</span>
+Cụm cập nhật</div>
+        <h3 style="font-size:0.9rem;margin:12px 0 8px;color:var(--brand-accent);">Branch Protection</h3>
+        <div class="card card-accent"><p style="font-size:0.82rem;">Settings → Branches → Rule <code>main</code>:</p><ul class="bullets"><li>Require PR review</li><li>Require status checks (chọn <code>validate</code>)</li><li>No bypassing (admin cũng không push trực tiếp)</li></ul><p style="font-size:0.78rem;margin-top:6px;"><strong>→</strong> Không ai push thẳng main. Mọi thay đổi qua PR + review + CI xanh.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>01 — GitOps &amp; CI/CD</span></div>
+</section>
+
+<!-- ===== LAB ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">LAB</div>
+  <div class="section-label">Hands-on · GitOps</div>
+  <h2>Tự tay <span class="gradient-text">GitOps-ify</span> cụm</h2>
+  <p class="lead">Gõ theo (Lab 0 → 7): chuẩn bị nền → cài ArgoCD → Application → self-heal → rollback → app-of-apps → sync waves → CI.</p>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 0 · Từ số 0</span>
+    <div class="slide-header"><h2>Dựng cụm + tự viết 1 app + đưa lên Git</h2><p class="lead">Cần sẵn: Docker · kubectl · minikube · git · 1 repo GitHub trống (vd <code>gitops</code>).</p></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; Tạo cụm + repo</div>
+        <div class="code-block"><span class="cmt"># 1) Cụm local (driver docker)</span>
+minikube start -p w9 --driver=docker
+kubectl config use-context w9
+kubectl get nodes                 <span class="out"># STATUS Ready</span>
+
+<span class="cmt"># 2) Tạo repo + thư mục app</span>
+mkdir gitops &amp;&amp; cd gitops &amp;&amp; mkdir k8s
+<span class="cmt"># -&gt; viết k8s/web.yaml (bên phải)</span>
+
+<span class="cmt"># 3) Đẩy lên GitHub (repo trống tạo sẵn)</span>
+git init &amp;&amp; git add . &amp;&amp; git commit -m <span class="str">"init"</span>
+git branch -M main
+git remote add origin <span class="str">https://github.com/&lt;ban&gt;/gitops.git</span>
+git push -u origin main</div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; <code>k8s/web.yaml</code> — app đơn giản</div>
+        <div class="code-block"><span class="cmt"># file: gitops/k8s/web.yaml</span>
+<span class="kw">apiVersion:</span> apps/v1
+<span class="kw">kind:</span> Deployment
+<span class="kw">metadata:</span> { name: web, namespace: demo }
+<span class="kw">spec:</span>
+  replicas: 2
+  selector: { matchLabels: { app: web } }
+  template:
+    metadata: { labels: { app: web } }
+    spec:
+      containers:
+      - { name: web, image: nginx:1.27 }</div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Xong khi:</strong> cụm <code>w9</code> chạy + repo <code>gitops</code> có <code>k8s/web.yaml</code>. <strong>CHƯA</strong> apply lên cụm — để ArgoCD làm ở Lab 2.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 1 · Cài ArgoCD</span>
+    <div class="slide-header"><h2>Cài "người thợ" ArgoCD vào cụm</h2></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; Cài + đợi sẵn sàng</div>
+        <div class="code-block">kubectl create ns argocd
+<span class="cmt"># --server-side: tránh "annotation Too long"
+# (CRD ArgoCD rất lớn, &gt;256KB)</span>
+kubectl apply --server-side -n argocd \
+  -f <span class="str">https://raw.githubusercontent.com/\
+argoproj/argo-cd/stable/manifests/install.yaml</span>
+kubectl -n argocd rollout status \
+  deploy/argocd-server          <span class="out"># đợi Running</span>
+kubectl -n argocd get pods       <span class="out"># argocd-* Running</span></div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; Mở UI (tùy chọn, để demo)</div>
+        <div class="code-block">kubectl -n argocd port-forward \
+  svc/argocd-server 8080:443 &amp;
+<span class="cmt"># mở https://localhost:8080  (user: admin)</span>
+<span class="cmt"># lấy mật khẩu ban đầu:</span>
+kubectl -n argocd get secret \
+  argocd-initial-admin-secret \
+  -o jsonpath=<span class="str">'{.data.password}'</span> \
+  | base64 -d; echo</div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Xong khi:</strong> các pod <code>argocd-*</code> Running. ArgoCD giờ "sống trong cụm", sẵn sàng kéo từ Git ở Lab 2.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 2 · Application</span>
+    <div class="slide-header"><h2>Tạo Application → ArgoCD tự sync</h2></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; Tạo file <code>argocd/apps/web.yaml</code></div>
+        <div class="code-block"><span class="cmt"># file: argocd/apps/web.yaml  (tạo folder argocd/apps/)</span>
+<span class="kw">apiVersion:</span> argoproj.io/v1alpha1
+<span class="kw">kind:</span> Application
+<span class="kw">metadata:</span> { name: web, namespace: argocd }
+<span class="kw">spec:</span>
+  source: { repoURL: <span class="str">https://github.com/&lt;ban&gt;/gitops.git</span>, path: k8s }
+  destination: { server: https://kubernetes.default.svc, namespace: demo }
+  syncPolicy: { automated: { prune: <span class="kw">true</span>, selfHeal: <span class="kw">true</span> } }</div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; apply Application bằng TAY</div>
+        <div class="code-block"><span class="cmt"># k8s/web.yaml đã ở trên Git từ Lab 0.
+# Application này bạn apply TAY (chưa có root):</span>
+kubectl apply -f argocd/apps/web.yaml
+
+kubectl -n argocd get app web    <span class="out"># Synced/Healthy</span>
+kubectl -n demo get deploy,pod   <span class="out"># 2 pod web</span></div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;"><strong>Lưu ý:</strong> <code>git push</code> file Application KHÔNG tự tạo app — phải <code>kubectl apply</code>. Đến Lab 5, root sẽ làm bước apply này thay bạn.</p>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Xong khi:</strong> app <code>web</code> = Synced/Healthy → ArgoCD tự tạo Deployment <code>web</code> trong cụm (bạn KHÔNG apply tay).</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 3 · Sync &amp; Self-heal</span>
+    <div class="slide-header"><h2>Đổi qua Git &amp; Self-heal</h2></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; Đổi qua Git</div>
+        <div class="code-block"><span class="cmt"># sửa file k8s/web.yaml: replicas 2→4, rồi push</span>
+git commit -am <span class="str">"2-&gt;4"</span> &amp;&amp; git push
+<span class="out"># ArgoCD tự kéo -&gt; 4 pod (~3' hoặc Refresh)</span></div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; Self-heal</div>
+        <div class="code-block">kubectl -n demo scale \
+  deploy/web --replicas=9
+kubectl -n demo get deploy web -w
+<span class="out"># vài giây sau tự kéo về theo Git</span></div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Hiểu:</strong> cụm luôn = Git; sửa tay không sống sót.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 4 · Rollback ⭐</span>
+    <div class="slide-header"><h2>Rollback bằng <code>git revert</code> &lt; 5 phút</h2></div>
+    <div class="code-block">git revert HEAD --no-edit &amp;&amp; git push
+<span class="out"># ArgoCD sync cụm về trạng thái commit cũ</span></div>
+    <div class="two-col reveal" style="margin-top:14px;">
+      <div class="card card-accent"><h3>✅ <code>git revert</code></h3><p>Sửa nguồn sự thật → rollback thật, có lịch sử "ai revert, lúc nào".</p></div>
+      <div class="card"><h3>❌ <code>kubectl rollout undo</code></h3><p>Git vẫn version mới → ArgoCD self-heal lại → rollback giả.</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 5 · app-of-apps</span>
+    <div class="slide-header"><h2>1 "root" quản các app qua 1 thư mục</h2><p class="lead">Thay vì apply tay từng app, để 1 <code>root</code> trông thư mục <code>argocd/apps/</code> — thêm app sau này chỉ cần thả file + push.</p></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; <code>argocd/root.yaml</code> — root trỏ thư mục App con</div>
+        <div class="code-block"><span class="cmt"># file: argocd/root.yaml</span>
+<span class="kw">apiVersion:</span> argoproj.io/v1alpha1
+<span class="kw">kind:</span> Application
+<span class="kw">metadata:</span> { name: root, namespace: argocd }
+<span class="kw">spec:</span>
+  source:
+    repoURL: <span class="str">https://github.com/&lt;ban&gt;/gitops.git</span>
+    path: <span class="str">argocd/apps</span>        <span class="cmt"># &lt;- thư mục chứa các App con (đã có web.yaml)</span>
+  destination: { server: https://kubernetes.default.svc, namespace: argocd }
+  syncPolicy: { automated: { prune: <span class="kw">true</span>, selfHeal: <span class="kw">true</span> } }</div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; apply root 1 lần → root tiếp quản web</div>
+        <div class="code-block">git add argocd/root.yaml &amp;&amp; git commit -m <span class="str">"app-of-apps"</span>
+git push
+<span class="cmt"># apply ROOT bằng tay — LẦN CUỐI dùng kubectl tạo app</span>
+kubectl apply -f argocd/root.yaml
+kubectl -n argocd get applications
+<span class="out"># root + web  &lt;- root quản web (đã ở argocd/apps/)</span></div>
+        <div class="checkpoint" style="margin-top:10px;font-size:0.8rem;"><strong>Chốt:</strong> từ giờ thêm app mới = thả 1 file vào <code>argocd/apps/</code> + <strong><code>git push</code></strong> → root tự đẻ, KHÔNG <code>kubectl apply</code> nữa. (Buổi chiều thêm Prometheus/Rollouts/api kiểu này → thấy rõ "1 root nhiều con".)</div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Xong khi:</strong> apply <code>root</code> 1 lần → <code>root</code> + <code>web</code> đều Synced.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 6 · sync waves</span>
+    <div class="slide-header"><h2>Ép thứ tự apply</h2><p class="lead">Đưa Namespace vào Git + thêm ConfigMap (Deployment đọc qua <code>envFrom</code>) → gắn <code>sync-wave</code> để ép thứ tự.</p></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; <code>k8s/web.yaml</code> — (3 resource, gắn sync-wave)</div>
+        <div class="code-block" style="font-size:clamp(0.62rem,0.8vw,0.76rem);line-height:1.5;"><span class="cmt"># file: k8s/web.yaml</span>
+<span class="kw">kind:</span> ConfigMap   <span class="cmt"># v1, wave 0</span>
+<span class="kw">metadata:</span> { name: web-config, namespace: demo,
+  annotations: { argocd.argoproj.io/sync-wave: <span class="str">"0"</span> } }
+<span class="kw">data:</span> { MESSAGE: <span class="str">"hello from gitops"</span> }
+<span class="cmt">---</span>
+<span class="kw">kind:</span> Deployment   <span class="cmt"># apps/v1, wave 1</span>
+<span class="kw">metadata:</span> { name: web, namespace: demo,
+  annotations: { argocd.argoproj.io/sync-wave: <span class="str">"1"</span> } }
+<span class="kw">spec:</span>
+  replicas: 2
+  selector: { matchLabels: { app: web } }
+  template:
+    metadata: { labels: { app: web } }
+    spec: { containers: [ { name: web, image: nginx:1.27,
+      envFrom: [ { configMapRef: { name: web-config } } ] } ] }
+<span class="cmt">---</span>
+<span class="kw">kind:</span> Service   <span class="cmt"># v1, wave 2</span>
+<span class="kw">metadata:</span> { name: web, namespace: demo,
+  annotations: { argocd.argoproj.io/sync-wave: <span class="str">"2"</span> } }
+<span class="kw">spec:</span> { selector: { app: web }, ports: [ { port: 80, targetPort: 80 } ] }</div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; <code>k8s/namespace.yaml</code> (wave -1, chạy đầu)</div>
+        <div class="code-block"><span class="cmt"># file: k8s/namespace.yaml</span>
+<span class="kw">apiVersion:</span> v1
+<span class="kw">kind:</span> Namespace
+<span class="kw">metadata:</span>
+  <span class="kw">name:</span> demo
+  <span class="kw">annotations:</span> { argocd.argoproj.io/sync-wave: <span class="str">"-1"</span> }</div>
+        <div class="do-now" style="margin-top:8px;">&#9654; thứ tự wave (nhỏ chạy trước)</div>
+        <div class="code-block"><span class="kw">Namespace</span> -1  →  <span class="kw">ConfigMap</span> 0  →  <span class="kw">Deployment</span> 1  →  <span class="kw">Service</span> 2</div>
+        <div class="warn" style="margin-top:10px;"><strong>Bẫy nếu thiếu wave:</strong> Deployment chạy trước khi ConfigMap tồn tại → <code>CreateContainerConfigError</code>.</div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Quan sát:</strong> push → UI tab Sync → các wave apply đúng thứ tự (Namespace/Config trước Deployment).</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 7 · CI</span>
+    <div class="slide-header"><h2>plan-on-PR + branch protection</h2></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; <code>.github/workflows/validate.yml</code></div>
+        <div class="code-block"><span class="cmt"># file: .github/workflows/validate.yml</span>
+<span class="kw">name:</span> validate
+<span class="kw">on:</span> { pull_request: { paths: [<span class="str">"k8s/**"</span>] } }
+<span class="kw">jobs:</span>
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -sSLo kc.tgz https://github.com/yannh/\
+kubeconform/releases/download/v0.6.7/\
+kubeconform-linux-amd64.tar.gz
+          tar -xzf kc.tgz &amp;&amp; sudo mv kubeconform /usr/local/bin/
+      - run: kubeconform -strict -summary k8s/   <span class="cmt"># validate, KHÔNG apply</span></div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; Branch protection (GitHub)</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);">Settings → Branches → Add rule cho <code>main</code>:</p>
+        <ul class="bullets">
+          <li>✔ Require a pull request before merging (+ approvals)</li>
+          <li>✔ Require status checks to pass → chọn <code>validate</code></li>
+        </ul>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:6px;">Thử: PR sửa manifest sai schema → job <code>validate</code> đỏ → nút Merge bị khóa.</p>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Xong khi:</strong> PR thiếu review / CI đỏ → nút Merge bị chặn.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · GitOps</span></div>
+</section>
+<!-- ===== Closing sáng ===== -->
+<section class="slide slide-closing">
+  <div class="eyebrow">Hết buổi sáng</div>
+  <h2>Cụm đã <span class="gradient-text">GitOps-managed</span></h2>
+  <p class="lead" style="max-width:700px;margin:0 auto;">Git là nguồn sự thật · ArgoCD tự sync · rollback bằng <code>git revert</code>.<br>Buổi chiều: Observability + Canary + Challenge.</p>
+</section>
+<script>
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.dots = document.getElementById('navDots');
+    this.counter = document.getElementById('counter');
+    this.progress = document.getElementById('progress');
+    this.total = this.slides.length;
+    this.currentIndex = 0;
+    this.wheelTimeout = null;
+    this.init();
+  }
+  init() { this.createDots(); this.observeSlides(); this.observeReveals(); this.bindKeys(); this.bindWheel(); this.bindTouch(); this.update(0); }
+  createDots() {
+    this.slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot';
+      dot.addEventListener('click', () => this.slides[i].scrollIntoView({ behavior: 'smooth' }));
+      this.dots.appendChild(dot);
+    });
+    this.dotEls = this.dots.querySelectorAll('.nav-dot');
+  }
+  observeSlides() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio > 0.5) { const idx = [...this.slides].indexOf(e.target); if (idx >= 0) this.update(idx); } });
+    }, { threshold: 0.5 });
+    this.slides.forEach(s => obs.observe(s));
+  }
+  observeReveals() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { if (e.target.classList.contains('stagger')) { [...e.target.children].forEach((ch, i) => setTimeout(() => ch.classList.add('visible'), i * 100)); } else { e.target.classList.add('visible'); } } });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.reveal, .stagger').forEach(el => obs.observe(el));
+  }
+  update(idx) {
+    this.currentIndex = idx;
+    this.dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+    const num = String(idx + 1).padStart(2, '0');
+    this.counter.innerHTML = `<strong>${num}</strong> / ${this.total}`;
+    this.progress.style.width = `${((idx + 1) / this.total) * 100}%`;
+  }
+  go(dir) { const next = Math.max(0, Math.min(this.total - 1, this.currentIndex + dir)); this.slides[next].scrollIntoView({ behavior: 'smooth' }); }
+  bindKeys() {
+    document.addEventListener('keydown', e => {
+      if (['ArrowDown','ArrowRight','Space','PageDown'].includes(e.code)) { e.preventDefault(); this.go(1); }
+      if (['ArrowUp','ArrowLeft','PageUp'].includes(e.code)) { e.preventDefault(); this.go(-1); }
+      if (e.code === 'Home') { e.preventDefault(); this.slides[0].scrollIntoView({ behavior: 'smooth' }); }
+      if (e.code === 'End') { e.preventDefault(); this.slides[this.total-1].scrollIntoView({ behavior: 'smooth' }); }
+    });
+  }
+  bindWheel() {
+    document.addEventListener('wheel', e => { if (this.wheelTimeout) return; this.wheelTimeout = setTimeout(() => this.wheelTimeout = null, 600); this.go(e.deltaY > 0 ? 1 : -1); }, { passive: true });
+  }
+  bindTouch() {
+    let startY = 0;
+    document.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+    document.addEventListener('touchend', e => { const diff = startY - e.changedTouches[0].clientY; if (Math.abs(diff) > 60) this.go(diff > 0 ? 1 : -1); });
+  }
+}
+document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+</script>
+</body>
+</html>

@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: web
+  name: argo-rollouts
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: '3'
+    argocd.argoproj.io/sync-wave: '-2'
 spec:
   project: default
   source:
-    repoURL: https://github.com/KaPhuDong/gitops.git # TODO: thay bằng URL Git thật nếu repo đổi
-    targetRevision: main
-    path: k8s
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-rollouts
+    targetRevision: '*'
   destination:
     server: https://kubernetes.default.svc
-    namespace: demo
+    namespace: argo-rollouts
   syncPolicy:
     automated:
       prune: true

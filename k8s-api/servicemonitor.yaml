@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: api-monitor
+  namespace: demo
+  labels:
+    release: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+spec:
+  selector:
+    matchLabels:
+      app: api
+  targetLabels:
+    - app
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

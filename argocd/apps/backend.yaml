@@ -1,13 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: backend
+  name: be
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
 spec:
+  project: default
   source:
-    repoURL: https://github.com/KaPhuDong/gitops.git
+    repoURL: https://github.com/KaPhuDong/gitops.git # TODO: thay bằng URL Git thật nếu repo đổi
     targetRevision: main
-    path: k8s/backend
+    path: k8s/be
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
@@ -15,3 +18,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
