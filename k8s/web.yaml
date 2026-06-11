@@ -12,7 +12,7 @@ spec:
     metadata:
       labels:
         app: web
-    spec:
-      containers:
-        - name: web
-          image: nginx:1.27
+  spec:
+    containers:
+      - name: web
+        image: nginx:1.27
