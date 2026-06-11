@@ -1,8 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+  namespace: demo
+  annotations:
+    argocd.argoproj.io/sync-wave: '0' # Chạy trước
+data:
+  MESSAGE: 'hello from gitops'
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
   namespace: demo
+  annotations:
+    argocd.argoproj.io/sync-wave: '1' # Đợi wave 0 Healthy mới chạy
 spec:
   replicas: 2
   selector:
@@ -12,7 +24,24 @@ spec:
     metadata:
       labels:
         app: web
-  spec:
-    containers:
-      - name: web
-        image: nginx:1.27
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27
+          envFrom:
+            - configMapRef:
+                name: web-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: demo
+  annotations:
+    argocd.argoproj.io/sync-wave: '2' # Chạy cuối cùng sau khi Deployment ổn định
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 80
+      targetPort: 80

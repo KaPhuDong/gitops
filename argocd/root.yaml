@@ -4,8 +4,9 @@ metadata:
   name: root
   namespace: argocd
 spec:
+  project: default
   source:
-    repoURL: https://github.com/<tài-khoản-của-bạn>/gitops.git
+    repoURL: https://github.com/KaPhuDong/gitops.git
     targetRevision: main
     path: argocd/apps # Trỏ thẳng vào thư mục chứa danh sách các app con
   destination:
