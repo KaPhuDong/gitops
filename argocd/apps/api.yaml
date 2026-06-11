@@ -1,18 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root
+  name: api
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '4'
 spec:
   project: default
   source:
-    repoURL: https://github.com/KaPhuDong/gitops.git
+    repoURL: https://github.com/KaPhuDong/gitops.git # TODO: thay bằng URL Git thật nếu repo đổi
     targetRevision: main
-    path: argocd/apps
+    path: k8s-api
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: demo
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

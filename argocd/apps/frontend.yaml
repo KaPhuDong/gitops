@@ -3,9 +3,12 @@ kind: Application
 metadata:
   name: frontend
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
 spec:
+  project: default
   source:
-    repoURL: https://github.com/KaPhuDong/gitops.git
+    repoURL: https://github.com/KaPhuDong/gitops.git # TODO: thay bằng URL Git thật nếu repo đổi
     targetRevision: main
     path: k8s/frontend
   destination:
@@ -15,3 +18,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

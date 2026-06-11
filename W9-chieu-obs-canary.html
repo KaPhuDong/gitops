@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>W9 — Deliver Smartly (Kiến thức + Ví dụ)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-primary: #0f172a;
+  --brand-accent: #f59e0b;
+  --brand-accent-2: #fb923c;
+  --brand-secondary: #3b82f6;
+  --brand-danger: #ef4444;
+  --brand-success: #22c55e;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --surface-dark: #ffffff;
+  --surface-card: #f8fafc;
+  --gradient-warm: linear-gradient(135deg, #f59e0b, #ef4444);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; overflow-x: hidden; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--surface-dark); color: var(--text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.slide {
+  min-height: 100vh; width: 100%; scroll-snap-align: start; scroll-snap-stop: always;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: clamp(32px, 5vh, 80px) clamp(24px, 5vw, 120px); position: relative; overflow: hidden;
+}
+.slide-title { background: var(--surface-dark); text-align: center; }
+.slide-title::before { content: ''; position: absolute; top: -30%; right: -20%; width: 60%; height: 80%; background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%); pointer-events: none; }
+.slide-title::after { content: ''; position: absolute; bottom: -20%; left: -15%; width: 50%; height: 60%; background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%); pointer-events: none; }
+.slide-title h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+.slide-title .lead { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text-secondary); max-width: 760px; }
+.gradient-text { background: var(--gradient-warm); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.slide-divider { background: var(--surface-dark); text-align: center; }
+.slide-divider::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 60%); pointer-events: none; }
+.section-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(5rem, 12vw, 10rem); font-weight: 700; -webkit-text-stroke: 2px rgba(245,158,11,0.2); color: transparent; line-height: 1; margin-bottom: -20px; }
+.section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--brand-accent); margin-bottom: 8px; }
+.slide-divider h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+.slide-divider .lead { font-size: clamp(0.95rem, 1.5vw, 1.15rem); color: var(--text-secondary); margin-top: 12px; max-width: 640px; }
+.slide-content { width: 100%; max-width: 1100px; }
+.slide-header { margin-bottom: clamp(20px, 3vh, 40px); }
+.slide-header h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+.slide-header .lead { font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 6px; }
+.slide-footer { position: absolute; bottom: 20px; left: 40px; right: 40px; display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--brand-accent); margin-bottom: 8px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+.badge-accent { background: rgba(245,158,11,0.15); color: var(--brand-accent); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(--brand-secondary); }
+.badge-danger { background: rgba(239,68,68,0.15); color: var(--brand-danger); }
+.badge-success { background: rgba(34,197,94,0.15); color: var(--brand-success); }
+.grid { display: grid; gap: clamp(12px, 2vw, 20px); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 12px; padding: clamp(16px, 2vw, 24px); transition: transform 0.3s var(--ease-out); }
+.card:hover { transform: translateY(-2px); }
+.card h3 { font-size: clamp(0.9rem, 1.3vw, 1.1rem); font-weight: 700; margin-bottom: 8px; }
+.card p, .card li { font-size: clamp(0.8rem, 1vw, 0.9rem); color: var(--text-secondary); line-height: 1.5; }
+.card-dark { background: var(--brand-primary); border-color: rgba(245,158,11,0.2); color:#e2e8f0; }
+.card-dark h3 { color:#fff; }
+.card-accent { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,146,60,0.05)); border-color: rgba(245,158,11,0.3); }
+.card-accent h3 { color: var(--brand-accent); }
+.card-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; color: var(--brand-accent); line-height: 1; }
+.card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; }
+.flow-step { background: var(--surface-card); border: 1px solid var(--border); border-radius: 10px; padding: clamp(10px, 1.5vw, 18px) clamp(14px, 2vw, 22px); text-align: center; font-size: clamp(0.75rem, 1vw, 0.88rem); font-weight: 600; }
+.flow-arrow { color: var(--brand-accent); font-size: 1.2rem; padding: 0 6px; flex-shrink: 0; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+.stat { text-align: center; padding: 16px; }
+.bullets { list-style: none; padding: 0; }
+.bullets li { padding: 8px 0 8px 24px; position: relative; font-size: clamp(0.85rem, 1.1vw, 0.95rem); color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+.bullets li:last-child { border-bottom: none; }
+.bullets li::before { content: ''; position: absolute; left: 0; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-accent); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 40px); align-items: start; }
+table { width: 100%; border-collapse: collapse; font-size: clamp(0.78rem, 1vw, 0.88rem); }
+th { text-align: left; padding: 10px 14px; background: rgba(30,41,59,0.8); color: var(--brand-accent); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 2px solid rgba(245,158,11,0.3); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+tr:hover td { background: rgba(51,65,85,0.06); }
+code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; background: rgba(51,65,85,0.12); padding: 2px 6px; border-radius: 4px; color:#0f172a; }
+.card-dark code { color:#fbbf24; background:rgba(245,158,11,0.18); }
+.code-block { background:#0f172a; border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:16px 18px; font-family:'JetBrains Mono',monospace; font-size:clamp(0.7rem,0.92vw,0.84rem); color:#e2e8f0; line-height:1.65; overflow-x:auto; white-space:pre; }
+.code-block .cmt { color:#64748b; } .code-block .kw { color:#f59e0b; } .code-block .str { color:#34d399; } .code-block .fn { color:#60a5fa; } .code-block .out { color:#94a3b8; }
+.lab-tag { display:inline-block; background:var(--gradient-warm); color:#fff; font-weight:800; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:4px 12px; border-radius:6px; margin-bottom:10px; }
+.do-now { display:flex; align-items:center; gap:8px; font-weight:700; color:var(--brand-accent); font-size:0.82rem; margin:4px 0 8px; }
+.checkpoint { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:12px 16px; font-size:0.84rem; color:var(--text-secondary); }
+.checkpoint strong { color:var(--brand-success); }
+.warn { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:12px 16px; font-size:0.84rem; color:var(--text-secondary); }
+.warn strong { color:var(--brand-danger); }
+.meta-chips { display: flex; gap: 12px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+.chip { display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--surface-card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); }
+.chip strong { color: var(--text-primary); }
+.reveal { opacity: 1; }
+.stagger > * { opacity: 1; }
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-warm); z-index: 1000; width: 0%; transition: width 0.3s; }
+.nav-dots { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.3); cursor: pointer; transition: all 0.3s; border: none; padding: 0; }
+.nav-dot.active { background: var(--brand-accent); transform: scale(1.4); }
+.slide-counter { position: fixed; bottom: 20px; right: 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); z-index: 1000; }
+.slide-counter strong { color: var(--text-primary); }
+.slide-closing { text-align: center; }
+.slide-closing h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+.refs { margin-top:16px; padding:10px 14px; background:#1e293b; border-radius:8px; font-size:0.72rem; color:#94a3b8; line-height:1.6; }
+.refs a { color:#60a5fa; text-decoration:none; } .refs a:hover { text-decoration:underline; }
+@media (max-width: 767px) { .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;} .two-col{grid-template-columns:1fr;} .flow{flex-direction:column;} .flow-arrow{transform:rotate(90deg);} .nav-dots{display:none;} }
+@media (max-height: 700px) { .slide { padding: 24px 20px; } }
+@media (prefers-reduced-motion: reduce) { .reveal,.stagger>*{opacity:1;transform:none;transition:none;} html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="slide-counter" id="counter"><strong>01</strong> / 24</div>
+
+<!-- Title -->
+<section class="slide slide-title">
+  <div class="eyebrow">W9 · Buổi chiều</div>
+  <h1>Observability + <span class="gradient-text">Canary</span></h1>
+  <p class="lead">Đo lường hệ thống (SLO · burn rate) + phát hành an toàn (canary auto-abort). Cuối buổi: <strong>Challenge</strong>.</p>
+  <div class="meta-chips">
+    <div class="chip"><strong>Buổi chiều</strong> Observability + Canary</div>
+    <div class="chip"><strong>Cuối</strong> Challenge "Ship Smartly"</div>
+  </div>
+</section>
+<!-- ===== Section 02: Observability ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">02</div>
+  <div class="section-label">Observability — SLO/SLI/OTel</div>
+  <h2>Hệ thống có <span class="gradient-text">khỏe không</span>?</h2>
+  <p class="lead">Đo bằng số: metrics × logs × traces · SLO · burn rate alert.</p>
+</section>
+
+<!-- 3 tru cot -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">3 trụ cột</div><h2>Metrics · Logs · Traces</h2><p class="lead">Observability đứng trên 3 loại dữ liệu (telemetry) mà hệ thống phát ra. Mỗi loại là một <em>góc nhìn</em> riêng.</p></div>
+    <div class="grid grid-3 reveal stagger">
+      <div class="card" style="border-top:4px solid var(--brand-secondary);">
+        <div style="text-align:center;font-size:1.8rem;">📈</div>
+        <h3 style="color:var(--brand-secondary);text-align:center;font-size:1.25rem;">Metrics</h3>
+        <p style="font-style:italic;color:var(--text-muted);text-align:center;margin-bottom:10px;">Những con số theo thời gian</p>
+        <hr style="border:none;border-top:1px solid var(--border);margin-bottom:10px;">
+        <p style="margin-bottom:8px;"><strong>Định nghĩa:</strong> dữ liệu dạng <strong>số</strong>, đo lặp lại đều đặn theo thời gian (time-series).</p>
+        <ul class="bullets">
+          <li>Tổng hợp được (đếm, trung bình, %) → nhẹ, lưu lâu</li>
+          <li>Trả lời: <strong>"CÓ vấn đề không?"</strong> (vd tỉ lệ lỗi, p95 latency)</li>
+          <li style="color:var(--text-muted);font-size:0.82rem;">Công cụ: Prometheus</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--brand-accent);">
+        <div style="text-align:center;font-size:1.8rem;">📋</div>
+        <h3 style="color:var(--brand-accent);text-align:center;font-size:1.25rem;">Logs</h3>
+        <p style="font-style:italic;color:var(--text-muted);text-align:center;margin-bottom:10px;">Nhật ký từng sự việc</p>
+        <hr style="border:none;border-top:1px solid var(--border);margin-bottom:10px;">
+        <p style="margin-bottom:8px;"><strong>Định nghĩa:</strong> bản ghi <strong>văn bản</strong> của từng sự kiện rời rạc, kèm mốc thời gian.</p>
+        <ul class="bullets">
+          <li>Chi tiết nhất nhưng nặng, khó tổng hợp</li>
+          <li>Trả lời: <strong>"Lỗi CỤ THỂ là gì?"</strong> (vd "10:05 DB timeout")</li>
+          <li style="color:var(--text-muted);font-size:0.82rem;">Công cụ: Loki</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid #8b5cf6;">
+        <div style="text-align:center;font-size:1.8rem;">🔗</div>
+        <h3 style="color:#8b5cf6;text-align:center;font-size:1.25rem;">Traces</h3>
+        <p style="font-style:italic;color:var(--text-muted);text-align:center;margin-bottom:10px;">Đường đi của một request</p>
+        <hr style="border:none;border-top:1px solid var(--border);margin-bottom:10px;">
+        <p style="margin-bottom:8px;"><strong>Định nghĩa:</strong> hành trình 1 request đi xuyên nhiều service, chia thành các <strong>span</strong> (mỗi span = 1 chặng, có thời lượng).</p>
+        <ul class="bullets">
+          <li>Thấy độ trễ &amp; lỗi ở từng chặng</li>
+          <li>Trả lời: <strong>"Chậm/lỗi ở BƯỚC nào?"</strong></li>
+          <li style="color:var(--text-muted);font-size:0.82rem;">Công cụ: Jaeger</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:14px;text-align:center;"><strong>Metrics</strong> = CÓ lỗi · <strong>Logs</strong> = lỗi GÌ · <strong>Traces</strong> = lỗi Ở ĐÂU. Bài thực hành W9 tập trung vào <strong>Metrics</strong>.</p>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- trace_id correlation - vi du ke tung buoc -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Mấu chốt · ví dụ thật</div><h2>Nối 3 trụ cột bằng <code>trace_id</code></h2><p class="lead">Mỗi request được gắn một mã <code>trace_id</code> duy nhất; mã đó xuất hiện trong cả metric, log và trace.</p></div>
+    <div class="code-block reveal"><span class="cmt"># Câu chuyện debug 1 lỗi 500 — đi từ metric → log → trace, nhờ cùng trace_id=abc</span>
+[1] METRIC : 10:05 đồ thị lỗi 500 nhảy vọt   → click vào điểm đó, thấy <span class="kw">trace_id=abc</span>
+[2] LOG    : lọc Loki theo trace_id=abc       → <span class="str">"ERROR: DB connection timeout"</span>
+[3] TRACE  : mở Jaeger trace abc              → span <span class="kw">api → DB mất 5 giây</span> (tắc ở đây!)</div>
+    <div class="card card-dark reveal" style="margin-top:16px; max-width:900px;"><p style="color:#e2e8f0;font-size:0.9rem;">Không có <code>trace_id</code> chung: bạn thấy "có lỗi" (metric) nhưng <strong>không biết log nào, trace nào</strong> là của request đó → mò kim đáy bể. Có <code>trace_id</code>: <strong>3 cú click</strong> từ "lỗi" tới "tắc ở DB 5s".</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- Stack -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Bộ công cụ</div><h2>Prometheus · Loki · Jaeger · Grafana</h2><p class="lead">App phát tín hiệu → các "kho" lưu lại → Grafana là màn hình xem chung.</p></div>
+    <div class="grid grid-2 reveal stagger">
+      <div class="card"><h3>Prometheus — kho metrics</h3><p>Lưu các con số theo thời gian. Điểm cần nhớ: nó <strong>tự đi gọi</strong> trang <code>/metrics</code> của app mỗi ~15s (gọi là <strong>scrape</strong>, mô hình "PULL") — app không phải đẩy đi.</p></div>
+      <div class="card"><h3>Loki — kho logs</h3><p>Lưu các dòng log, tìm kiếm theo nhãn/thời gian (rẻ hơn full-text).</p></div>
+      <div class="card"><h3>Jaeger — kho traces</h3><p>Lưu hành trình request (cây span), tìm theo <code>trace_id</code> hoặc service.</p></div>
+      <div class="card card-accent"><h3>Grafana — màn hình chung</h3><p>Vẽ dashboard từ cả 3 kho; từ một điểm trên đồ thị có thể <strong>bấm nhảy</strong> sang log/trace tương ứng.</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- SLI vs SLO -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Khái niệm lõi</div><h2>SLA · SLO · SLI</h2><p class="lead">Ba lớp cam kết chất lượng — từ hợp đồng với khách (SLA) → mục tiêu nội bộ (SLO) → con số đo thực tế (SLI).</p></div>
+    <div class="reveal stagger">
+      <div class="card" style="border-left:5px solid var(--brand-secondary);margin-bottom:12px;">
+        <h3 style="color:var(--brand-secondary);">SLA — Service Level Agreement</h3>
+        <p><strong>Hợp đồng</strong> giữa nhà cung cấp &amp; khách hàng: cam kết uptime + <strong>phạt nếu vi phạm</strong>. (Hướng ra ngoài, có ràng buộc pháp lý/tiền.)</p>
+        <p style="margin-top:6px;color:var(--text-muted);">Ví dụ: <em>"AWS cam kết EC2 uptime 99.99%/tháng. Dưới mức đó → hoàn tiền (credit) vào tài khoản bạn."</em></p>
+      </div>
+      <div class="card" style="border-left:5px solid var(--brand-accent);margin-bottom:12px;">
+        <h3 style="color:var(--brand-accent);">SLO — Service Level Objective</h3>
+        <p><strong>Mục tiêu nội bộ</strong> team đặt cho chất lượng — cụ thể hơn, hướng kỹ thuật. Thường chặt hơn SLA (để còn biên an toàn).</p>
+        <p style="margin-top:6px;color:var(--text-muted);">Ví dụ: <em>"Checkout API phải trả lời &lt; 200ms cho 99.5% request trong mọi cửa sổ 30 ngày."</em></p>
+      </div>
+      <div class="card" style="border-left:5px solid var(--brand-success);">
+        <h3 style="color:var(--brand-success);">SLI — Service Level Indicator</h3>
+        <p><strong>Con số ĐO thực tế</strong> của chất lượng, từ góc người dùng. SLO là mục tiêu; SLI là điểm thực sự đạt được.</p>
+        <p style="margin-top:6px;color:var(--text-muted);">Ví dụ: <code>success rate = req không lỗi / tổng req</code> → tháng này <strong>99.7%</strong> (≥ SLO 99.5% → đạt).</p>
+      </div>
+    </div>
+    <div class="card card-dark reveal" style="margin-top:14px;"><p style="color:#e2e8f0;font-size:0.86rem;"><strong style="color:var(--brand-accent)">Nhớ:</strong> SLA = hứa với khách (vi phạm thì đền) · SLO = mục tiêu mình tự đặt (chặt hơn SLA) · SLI = số đo thực tế để biết có đạt SLO không. ⚠️ SLI phải đo <em>trải nghiệm user</em> (request thành công, đủ nhanh) — KHÔNG phải "CPU &lt; 80%".</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- Error budget - tinh toan -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Khái niệm lõi</div><h2>Error budget — "ngân sách được phép hỏng"</h2><p class="lead">SLO 99.5% nghĩa là bạn được phép hỏng 0.5%. Tính ra thời gian cụ thể:</p></div>
+    <div class="code-block reveal"><span class="cmt"># SLO availability = 99.5% trên 30 ngày</span>
+Tổng thời gian 1 tháng = 30 × 24 × 60          = <span class="kw">43.200 phút</span>
+Error budget          = 0.5% × 43.200          = <span class="kw">216 phút/tháng</span>  (~3.6 giờ)</div>
+    <div class="card card-accent reveal" style="margin-top:16px; max-width:900px;"><p style="font-size:0.9rem;"><strong>Ý nghĩa (như ngân sách tiêu xài):</strong> mỗi tháng có "quota" 216 phút được phép lỗi/down. <strong>Còn quota</strong> → cứ deploy tính năng mới thoải mái. <strong>Hết quota</strong> → ngừng mạo hiểm, dồn sức làm ổn định. → SLO biến tranh cãi "deploy hay không" thành <strong>quyết định bằng số</strong>.</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- Burn rate - giai thich bang so -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Khái niệm lõi · cảnh báo</div><h2>Burn rate — "đang tiêu quota nhanh cỡ nào?"</h2></div>
+    <div class="code-block reveal"><span class="cmt"># Burn rate = mức lỗi hiện tại / mức được phép (0.5%)</span>
+Lỗi 0.5% (đúng quota)  → burn rate = 1   → quota cạn đúng sau 30 ngày
+Lỗi 5%   (gấp 10 lần)  → burn rate = <span class="kw">10</span>  → quota 30 ngày <span class="kw">cháy trong 3 ngày</span>!
+Lỗi 7.2% (gấp 14.4)    → burn rate = <span class="kw">14.4</span> → cháy trong ~2 ngày → cực gấp</div>
+    <div class="card card-accent reveal" style="margin-top:14px; max-width:900px;"><p style="font-size:0.88rem;">Burn rate càng cao = càng phải báo gấp. <strong>Đừng dùng "alert khi lỗi &gt; 0.5%"</strong>: quá nhạy (1 phút lỗi nhỏ cũng kêu → báo giả) hoặc quá chậm (rò rỉ âm ỉ không ai biết). → Dùng burn rate qua <strong>nhiều cửa sổ thời gian</strong> (slide sau).</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- Multi-window -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Cảnh báo thông minh</div><h2>Multi-window burn rate alert</h2><p class="lead">Alert nhìn burn rate trên <strong>2 cửa sổ thời gian</strong> khác nhau — mỗi cửa sổ bắt một loại sự cố: <code>fast 1h × 5min</code> · <code>slow 6h × 30min</code>.</p></div>
+    <div class="two-col reveal">
+      <div class="card card-accent">
+        <h3>fast — 1h × 5min</h3>
+        <p>Cửa sổ ngắn → bắt <strong>sự cố gấp</strong> (incident đang đốt error budget cực nhanh).</p>
+        <p style="margin-top:6px;">→ báo trong <strong>vài phút</strong>.</p>
+      </div>
+      <div class="card">
+        <h3>slow — 6h × 30min</h3>
+        <p>Cửa sổ dài → bắt <strong>rò rỉ chậm</strong> (slow leak, lỗi âm ỉ nhiều giờ).</p>
+        <p style="margin-top:6px;">→ báo sớm trước khi cháy hết budget.</p>
+      </div>
+    </div>
+    <div class="card card-dark reveal" style="margin-top:16px; max-width:900px;"><p style="color:#e2e8f0;font-size:0.9rem;"><strong style="color:var(--brand-accent)">Vì sao cần 2 cửa sổ:</strong> nếu chỉ 1 cửa sổ thì hoặc quá nhạy (1 phút lỗi nhỏ cũng kêu → báo giả), hoặc quá chậm (rò rỉ âm ỉ không ai biết). Ghép <strong>fast</strong> (bắt cháy lớn ngay) + <strong>slow</strong> (bắt rò rỉ âm ỉ) → vừa nhạy, vừa không bỏ sót.</p></div>
+  </div>
+  <div class="slide-footer"><span>02 — Observability</span></div>
+</section>
+
+<!-- ===== Section 03: Canary ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">03</div>
+  <div class="section-label">Progressive Delivery (Canary)</div>
+  <h2>Ra bản mới <span class="gradient-text">từ từ &amp; tự bảo vệ</span></h2>
+  <p class="lead">Thả traffic dần · để metric tự chấm khỏe/bệnh · tệ thì tự abort, không cần người canh.</p>
+</section>
+
+<!-- Problem -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Problem</div><h2>Deploy "một phát 100%" rất rủi ro</h2><p class="lead">Bản mới lỗi → <strong>toàn bộ</strong> user dính ngay.</p></div>
+    <div class="grid grid-3 reveal stagger">
+      <div class="card"><h3>Ảnh hưởng toàn bộ</h3><p>Đổi 100% traffic sang bản mới — nếu nó lỗi, <strong>mọi user</strong> gặp lỗi cùng lúc.</p></div>
+      <div class="card"><h3>Biết muộn</h3><p>30 phút sau, khách than phiền, mới phát hiện. Không có "vùng đệm".</p></div>
+      <div class="card"><h3>Rollback tay</h3><p>Người phải nhìn dashboard, tự quyết, tự rollback — chậm &amp; căng thẳng.</p></div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:16px; max-width:900px; margin-left:auto;margin-right:auto;"><p style="font-size:0.9rem;"><strong>Progressive delivery (canary)</strong> = ra bản mới <strong>từng phần nhỏ</strong>, để <strong>metric tự chấm</strong>, tệ thì <strong>tự quay về bản cũ</strong> trước khi ảnh hưởng số đông.</p></div>
+  </div>
+  <div class="slide-footer"><span>03 — Canary</span></div>
+</section>
+
+<!-- Canary la gi -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Canary là gì</div><h2>Thả traffic dần</h2><p class="lead">
+    <div class="flow reveal stagger" style="margin-bottom:16px;">
+      <div class="flow-step" style="border-color:var(--brand-secondary);"><div style="font-weight:800;color:var(--brand-secondary);">10%</div><div style="font-size:0.72rem;color:var(--text-muted);">bản mới nhận 10% traffic</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div style="font-weight:800;">quan sát</div><div style="font-size:0.72rem;color:var(--text-muted);">metric ổn?</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="border-color:var(--brand-accent);"><div style="font-weight:800;color:var(--brand-accent);">50%</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="border-color:var(--brand-success);"><div style="font-weight:800;color:var(--brand-success);">100%</div></div>
+    </div>
+    <div class="two-col reveal">
+      <div class="card"><h3>1% hay 10%? (trade-off)</h3><p><strong>1%</strong>: an toàn hơn (ít user dính nếu lỗi) nhưng metric <strong>ít dữ liệu</strong> → chấm chậm/khó tin.</p><p style="margin-top:6px;"><strong>10%</strong>: đủ dữ liệu chấm nhanh, nhưng lỗi thì 10% user dính.</p></div>
+      <div class="card card-accent"><h3>Quan sát đủ lâu</h3><p>Mỗi bước cần <strong>pause</strong> đủ lâu để metric đủ tin rồi mới tăng %. Vội tăng = quyết định trên quá ít dữ liệu.</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>03 — Canary</span></div>
+</section>
+
+<!-- Argo Rollouts + Rollout CRD -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Công cụ</div><h2>Argo Rollouts — thay <code>Deployment</code> bằng <code>Rollout</code></h2><p class="lead"><code>Rollout</code> là CRD giống Deployment nhưng biết "thả dần + chấm + abort".</p></div>
+    <div class="two-col reveal">
+      <div>
+        <div class="code-block"><span class="kw">kind:</span> Rollout
+<span class="kw">spec:</span>
+  strategy:
+    <span class="kw">canary:</span>
+      steps:
+      - setWeight: 10        <span class="cmt"># 10% traffic sang bản mới</span>
+      - pause: { duration: 2m }   <span class="cmt"># quan sát 2 phút</span>
+      - setWeight: 50
+      - pause: { duration: 2m }
+      - setWeight: 100       <span class="cmt"># ok hết -&gt; full</span></div>
+      </div>
+      <div class="stagger">
+        <div class="card" style="margin-bottom:12px;"><h3><code>setWeight</code> / <code>pause</code></h3><p><strong>setWeight</strong>: đặt % traffic cho bản mới. <strong>pause</strong>: dừng lại quan sát (có thời hạn, hoặc chờ duyệt tay).</p></div>
+        <div class="card card-accent"><h3>Vẫn là GitOps</h3><p>File <code>Rollout</code> nằm trong Git → ArgoCD sync. Deploy bản mới = đổi image trong Git → push.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>03 — Canary</span></div>
+</section>
+
+<!-- AnalysisTemplate -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Khái niệm lõi</div><h2>AnalysisTemplate — "luật tự chấm" bằng metric</h2><p class="lead">Argo Rollouts query Prometheus ở mỗi bước; metric tệ → tự <strong>abort</strong> &amp; rollback.</p></div>
+    <div class="code-block reveal"><span class="kw">kind:</span> AnalysisTemplate      <span class="cmt"># gắn vào Rollout, chạy nền lúc canary</span>
+<span class="kw">spec:</span>
+  metrics:
+  - name: success-rate
+    interval: 30s
+    <span class="kw">successCondition:</span> result &gt;= 0.95     <span class="cmt"># &gt;=95% thành công thì coi là KHỎE</span>
+    <span class="kw">failureLimit:</span> 3                      <span class="cmt"># tệ 3 lần liên tiếp -&gt; ABORT</span>
+    provider:
+      prometheus:
+        address: http://prometheus:9090
+        query: <span class="str">sum(rate(req{status!~"5.."}[2m])) / sum(rate(req[2m]))</span></div>
+    <div class="card card-dark reveal" style="margin-top:14px; max-width:900px;"><p style="color:#e2e8f0;font-size:0.88rem;"><strong style="color:var(--brand-accent)">Mấu chốt:</strong> đây là chỗ <strong>nối D2 vào D3</strong> — canary dùng chính <strong>metric/SLO</strong> để quyết khỏe/bệnh. Nâng cao: cho canary <strong>abort theo burn-rate alert</strong> (không chỉ success rate tức thời).</p></div>
+  </div>
+  <div class="slide-footer"><span>03 — Canary</span></div>
+</section>
+
+<!-- Good run vs bad run -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Kết quả</div><h2>2 kịch bản — không cần người canh</h2></div>
+    <div class="two-col reveal">
+      <div class="card" style="border-color:rgba(34,197,94,0.4);">
+        <h3 style="color:var(--brand-success)">✓ Good run (bản tốt)</h3>
+        <div class="code-block" style="margin-top:8px;">10% → quan sát ✓ → 50% → ✓ → 100%</div>
+        <p style="margin-top:8px;">Metric luôn ≥ 95% → canary tự lên dần đến <strong>100%</strong> (~20–25 phút).</p>
+      </div>
+      <div class="card" style="border-color:rgba(239,68,68,0.4);">
+        <h3 style="color:var(--brand-danger)">✗ Bad run (bản mới lỗi)</h3>
+        <div class="code-block" style="margin-top:8px;">10% → metric tụt → <span class="kw">ABORT</span> → về bản cũ</div>
+        <p style="margin-top:8px;">AnalysisTemplate thấy success rate &lt; 95% → <strong>tự abort &lt; 3 phút</strong>, rollback, <strong>chỉ 10% user từng dính</strong>.</p>
+      </div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:16px; max-width:900px;"><p style="font-size:0.9rem;">Cả 2 ca <strong>tự động</strong>: không ai ngồi nhìn dashboard, không ai bấm rollback tay. Đó là "tự bảo vệ".</p></div>
+  </div>
+  <div class="slide-footer"><span>03 — Canary</span></div>
+</section>
+
+<!-- ===== LAB ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">LAB</div>
+  <div class="section-label">Hands-on · Observability + Canary</div>
+  <h2>Tự tay <span class="gradient-text">đo lường</span> &amp; <span class="gradient-text">thả canary</span></h2>
+  <p class="lead">Dùng tiếp repo &amp; cụm buổi sáng. Cài nền tảng qua GitOps (thêm file → push), deploy app đo được, chạy canary promote tay. <strong>SLO/alert + auto-abort để dành Challenge.</strong></p>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 1 · Nền tảng</span>
+    <div class="slide-header"><h2>Cài Prometheus + Argo Rollouts — qua GitOps</h2><p class="lead">Không cài tay. Thêm 2 file Application vào <code>argocd/apps/</code> → <code>git push</code> → <strong>root tự cài</strong> (đúng app-of-apps buổi sáng).</p></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; tự tạo 2 file Application (Helm) trong <code>argocd/apps/</code></div>
+        <div class="code-block" style="font-size:clamp(0.62rem,0.8vw,0.76rem);line-height:1.55;"><span class="cmt"># file: argocd/apps/kube-prometheus-stack.yaml</span>
+<span class="kw">apiVersion:</span> argoproj.io/v1alpha1
+<span class="kw">kind:</span> Application
+<span class="kw">metadata:</span> { name: kube-prometheus-stack, namespace: argocd }
+<span class="kw">spec:</span>
+  source:
+    repoURL: <span class="str">https://prometheus-community.github.io/helm-charts</span>
+    chart: kube-prometheus-stack
+    targetRevision: 65.1.1
+    helm: { values: |    <span class="cmt"># repo: + ruleSelector, grafana adminPassword</span>
+      prometheus: { prometheusSpec: { serviceMonitorSelectorNilUsesHelmValues: false } } }
+  destination: { server: https://kubernetes.default.svc, namespace: monitoring }
+  syncPolicy: { automated: { prune: <span class="kw">true</span>, selfHeal: <span class="kw">true</span> },
+                syncOptions: [<span class="str">CreateNamespace=true</span>, <span class="str">ServerSideApply=true</span>] }
+<span class="cmt"># file: argocd/apps/argo-rollouts.yaml — y hệt, đổi:
+#   chart: argo-rollouts ; targetRevision: 2.37.7 ; namespace: argo-rollouts</span></div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; push → root đẻ + verify</div>
+        <div class="code-block">git add argocd/apps/ &amp;&amp; git commit -m <span class="str">"obs+rollouts"</span> &amp;&amp; git push
+<span class="cmt"># KHÔNG kubectl apply — root tự tạo</span>
+kubectl -n argocd get applications
+<span class="out"># + kube-prometheus-stack, argo-rollouts</span>
+kubectl -n monitoring get pods     <span class="out"># prometheus, grafana</span>
+kubectl -n argo-rollouts get pods  <span class="out"># rollouts controller</span></div>
+        <div class="warn" style="margin-top:10px;">Stack hơi nặng → <code>minikube start -p w9 --cpus=4 --memory=6g</code>. Chờ pods Running (~vài phút).</div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:12px;"><strong>Xong khi:</strong> 2 app mới Synced; pods <code>monitoring</code> + <code>argo-rollouts</code> Running.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · Chiều</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 2 · Tự viết app api</span>
+    <div class="slide-header"><h2>Viết app Flask có <code>/metrics</code> → build image</h2><p class="lead">Tự tạo 2 file trong thư mục <code>app/</code>, rồi build &amp; nạp ảnh vào cụm.</p></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; <code>app/app.py</code></div>
+        <div class="code-block"><span class="cmt"># file: app/app.py</span>
+<span class="kw">import</span> os, random
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, jsonify
+<span class="kw">from</span> prometheus_flask_exporter <span class="kw">import</span> PrometheusMetrics
+app = Flask(__name__)
+PrometheusMetrics(app)            <span class="cmt"># tự thêm /metrics</span>
+ERR = float(os.getenv(<span class="str">"ERROR_RATE"</span>, <span class="str">"0"</span>))
+VER = os.getenv(<span class="str">"VERSION"</span>, <span class="str">"v1"</span>)
+<span class="fn">@app.get(<span class="str">"/"</span>)</span>
+<span class="kw">def</span> index():
+    <span class="kw">if</span> random.random() &lt; ERR:
+        <span class="kw">return</span> jsonify(error=<span class="str">"injected"</span>, version=VER), 500
+    <span class="kw">return</span> jsonify(ok=<span class="kw">True</span>, version=VER)
+<span class="fn">@app.get(<span class="str">"/healthz"</span>)</span>
+<span class="kw">def</span> healthz(): <span class="kw">return</span> <span class="str">"ok"</span>, 200</div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; <code>app/Dockerfile</code> + build</div>
+        <div class="code-block"><span class="cmt"># file: app/Dockerfile</span>
+<span class="kw">FROM</span> python:3.12-slim
+<span class="kw">RUN</span> pip install flask prometheus-flask-exporter
+<span class="kw">COPY</span> app.py /app/app.py
+<span class="kw">WORKDIR</span> /app
+<span class="kw">ENV</span> FLASK_APP=app.py
+<span class="kw">EXPOSE</span> 8080
+<span class="kw">CMD</span> [<span class="str">"flask"</span>,<span class="str">"run"</span>,<span class="str">"--host=0.0.0.0"</span>,<span class="str">"--port=8080"</span>]</div>
+        <div class="code-block" style="margin-top:8px;">docker build -t w9-api:1 app/
+minikube image load w9-api:1 -p w9   <span class="cmt"># không cần registry</span></div>
+        <div class="checkpoint" style="margin-top:10px;"><strong>Xong khi:</strong> <code>minikube image ls -p w9 | grep w9-api</code> ra <code>w9-api:1</code>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Lab · Chiều</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 3 · Tự viết manifest + xem metric</span>
+    <div class="slide-header"><h2>Viết <code>k8s-api/</code> + Application → push → Prometheus thấy metric</h2></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; <code>k8s-api/api.yaml</code> (Rollout + Service)</div>
+        <div class="code-block" style="font-size:clamp(0.6rem,0.78vw,0.74rem);line-height:1.5;"><span class="cmt"># file: k8s-api/api.yaml</span>
+<span class="kw">kind:</span> Rollout            <span class="cmt"># argoproj.io/v1alpha1</span>
+<span class="kw">metadata:</span> { name: api, namespace: demo, labels: { app: api } }
+<span class="kw">spec:</span>
+  replicas: 4
+  selector: { matchLabels: { app: api } }
+  template:
+    metadata: { labels: { app: api } }
+    spec:
+      containers:
+      - name: api
+        image: w9-api:1
+        imagePullPolicy: IfNotPresent
+        ports: [ { name: http, containerPort: 8080 } ]
+        env:
+        - { name: ERROR_RATE, value: <span class="str">"0"</span> }
+        - { name: VERSION,    value: <span class="str">"v1"</span> }
+        readinessProbe: { httpGet: { path: /healthz, port: 8080 } }
+  strategy:
+    canary:                  <span class="cmt"># Lab 4 dùng tới</span>
+      steps: [ { setWeight: 25 }, { pause: {} },
+               { setWeight: 50 }, { pause: { duration: 30s } },
+               { setWeight: 100 } ]
+<span class="cmt">---  Service api (port http 8080) ở cùng file</span></div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; <code>servicemonitor.yaml</code> + <code>argocd/apps/api.yaml</code></div>
+        <div class="code-block"><span class="cmt"># file: k8s-api/servicemonitor.yaml</span>
+<span class="kw">kind:</span> ServiceMonitor       <span class="cmt"># Prometheus scrape /metrics</span>
+<span class="kw">spec:</span>
+  selector: { matchLabels: { app: api } }
+  endpoints: [ { port: http, path: /metrics, interval: 15s } ]
+<span class="cmt"># file: argocd/apps/api.yaml -> Application, path: k8s-api, ns: demo</span></div>
+        <div class="code-block" style="margin-top:8px;">git add app/ k8s-api/ argocd/apps/api.yaml
+git commit -m <span class="str">"api"</span> &amp;&amp; git push   <span class="cmt"># root tự deploy</span>
+<span class="cmt"># traffic + xem metric:</span>
+kubectl -n demo run load --image=busybox --restart=Never -- \
+  sh -c <span class="str">"while true; do wget -qO- api:8080/; done"</span>
+kubectl -n monitoring port-forward \
+  svc/kube-prometheus-stack-prometheus 9090 &amp;</div>
+      </div>
+    </div>
+    <div class="checkpoint" style="margin-top:10px;"><strong>Xong khi:</strong> Prometheus → Targets thấy <code>api</code> UP; query <code>flask_http_request_total{namespace="demo"}</code> tăng dần.</div>
+  </div>
+  <div class="slide-footer"><span>Lab · Chiều</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <span class="lab-tag">Lab 4 · Canary tay</span>
+    <div class="slide-header"><h2><code>Rollout</code> thả canary — promote / abort bằng tay</h2><p class="lead">Sửa <code>api.yaml</code> đã viết ở Lab 3 (vd <code>VERSION v1→v2</code>) → Rollout không lên 100% ngay, mà dừng ở 25% chờ bạn.</p></div>
+    <div class="two-col">
+      <div>
+        <div class="do-now">&#9654; kích 1 bản mới (qua Git)</div>
+        <div class="code-block"><span class="cmt"># sửa k8s-api/api.yaml: VERSION "v1" -&gt; "v2"</span>
+git commit -am <span class="str">"api v2"</span> &amp;&amp; git push
+<span class="cmt"># ArgoCD sync -&gt; Rollout bắt đầu canary</span>
+
+<span class="cmt"># theo dõi canary (cần plugin kubectl-argo-rollouts):</span>
+kubectl argo rollouts get rollout api -n demo --watch</div>
+        <div class="code-block" style="margin-top:8px;"><span class="cmt"># strategy.canary trong api.yaml:</span>
+steps:
+  - setWeight: 25
+  - pause: {}        <span class="cmt"># dừng vô hạn -&gt; chờ người</span></div>
+      </div>
+      <div>
+        <div class="do-now">&#9654; quyết định bằng tay</div>
+        <div class="code-block"><span class="cmt"># thấy ổn -&gt; cho lên tiếp:</span>
+kubectl argo rollouts promote api -n demo
+
+<span class="cmt"># thấy tệ -&gt; hủy, về bản cũ:</span>
+kubectl argo rollouts abort api -n demo</div>
+        <div class="checkpoint" style="margin-top:10px;"><strong>Quan sát:</strong> đang pause chỉ 25% pod chạy bản mới; <code>promote</code> → 50%→100%; <code>abort</code> → về bản cũ ngay.</div>
+        <div class="warn" style="margin-top:10px;">Ở đây <strong>người</strong> quyết promote/abort. <strong>Challenge:</strong> thêm <code>AnalysisTemplate</code> query Prometheus để <strong>máy tự abort</strong> khi metric tệ.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Lab · Chiều</span></div>
+</section>
+
+<!-- ===== Challenge ===== -->
+<section class="slide slide-divider">
+  <div class="section-number">★</div>
+  <div class="section-label">Bài tập lớn</div>
+  <h2>Challenge: <span class="gradient-text">"Ship Smartly"</span></h2>
+  <p class="lead">Làm trong <strong>24h</strong> · tiếp tục ngay trên repo lab · gộp cả 3 mảng · present cuối buổi.</p>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Đề bài</div><h2>Đưa bản mới <code>api</code> ra an toàn &amp; tự bảo vệ</h2></div>
+    <div class="grid grid-3 reveal stagger">
+      <div class="card"><div class="card-number">1</div><h3>Qua Git</h3><p>Mọi thay đổi qua Git (ArgoCD sync). <strong>Rollback git revert &lt; 5'</strong>.</p></div>
+      <div class="card"><div class="card-number">2</div><h3>Đo lường</h3><p>1 <strong>SLO</strong> + 1 <strong>alert</strong> fire khi chất lượng tụt → <strong>gửi về email cá nhân</strong>.</p></div>
+      <div class="card"><div class="card-number">3</div><h3>Canary tự động</h3><p>Thay <code>pause</code> tay bằng <code>AnalysisTemplate</code>: bản tốt → 100%; bản lỗi → <strong>tự abort</strong> về bản cũ.</p></div>
+    </div>
+    <div class="card card-accent reveal" style="margin-top:14px; max-width:900px; margin-left:auto;margin-right:auto;"><p style="font-size:0.9rem;"><strong>Xuất phát (đã có từ lab):</strong> ArgoCD + Prometheus/Grafana + Argo Rollouts + <code>api</code> <strong>đã là Rollout</strong> (canary <strong>pause thủ công</strong>). HV <strong>không dựng lại hạ tầng/Rollout</strong> — chỉ <strong>tự động hoá + đo lường + chứng minh</strong>.</p></div>
+  </div>
+  <div class="slide-footer"><span>Challenge · Ship Smartly</span></div>
+</section>
+
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header"><div class="eyebrow">Nộp &amp; thang chấm</div><h2>Thế nào là đạt</h2></div>
+    <div class="reveal">
+      <div class="checkpoint"><strong>ĐẠT — phải đủ cả 4:</strong>
+        <ul class="bullets" style="margin-top:6px;">
+          <li>Thay đổi qua Git · ArgoCD <strong>Synced</strong> (no drift) · <strong>reproduce được từ Git</strong></li>
+          <li><code>git revert</code> rollback <strong>&lt; 5 phút</strong></li>
+          <li>1 <strong>SLO</strong> + 1 <strong>alert</strong> fire <strong>về email cá nhân</strong> khi inject lỗi</li>
+          <li>Canary <strong>bản lỗi tự abort</strong> về bản cũ <span style="color:var(--text-muted)">(quan trọng nhất)</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:14px; max-width:900px;"><p style="font-size:0.85rem;"><strong>Nộp:</strong> repo (<code>Rollout</code> + <code>AnalysisTemplate</code> + SLO/alert, tất cả qua Git) · <code>README</code> (giải thích query &amp; ngưỡng) · clip/ảnh chứng minh <strong>canary auto-abort</strong> + <strong>rollback</strong>.</p></div>
+  </div>
+  <div class="slide-footer"><span>Challenge · Ship Smartly</span></div>
+</section>
+<!-- ===== Closing: tie 3 lai ===== -->
+<section class="slide slide-closing">
+  <div class="eyebrow">Ship Smartly</div>
+  <h2>3 mảnh ghép thành <span class="gradient-text">1 pipeline an toàn</span></h2>
+  <div class="flow reveal stagger" style="margin:8px 0 16px;">
+    <div class="flow-step" style="border-color:var(--brand-secondary);"><div style="font-weight:800;color:var(--brand-secondary);">GitOps</div><div style="font-size:0.72rem;color:var(--text-muted);">đổi qua Git, tự sync</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--brand-accent);"><div style="font-weight:800;color:var(--brand-accent);">Observability</div><div style="font-size:0.72rem;color:var(--text-muted);">metric/SLO chấm khỏe/bệnh</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color:var(--brand-success);"><div style="font-weight:800;color:var(--brand-success);">Canary</div><div style="font-size:0.72rem;color:var(--text-muted);">thả dần, tệ thì auto-abort</div></div>
+  </div>
+  <p class="lead" style="max-width:720px;margin:0 auto;">Đổi version qua Git → canary thả dần → metric/SLO tự chấm → tốt thì lên 100%, tệ thì tự rollback. <strong>Ship smartly.</strong></p>
+  <div class="refs">Tài liệu: Argo Rollouts Docs (Concepts → Analysis) · Flagger (alt) · CNCF Progressive Delivery · k6 / Vegeta (load test)</div>
+</section>
+
+<script>
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.dots = document.getElementById('navDots');
+    this.counter = document.getElementById('counter');
+    this.progress = document.getElementById('progress');
+    this.total = this.slides.length;
+    this.currentIndex = 0;
+    this.wheelTimeout = null;
+    this.init();
+  }
+  init() { this.createDots(); this.observeSlides(); this.observeReveals(); this.bindKeys(); this.bindWheel(); this.bindTouch(); this.update(0); }
+  createDots() {
+    this.slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot';
+      dot.addEventListener('click', () => this.slides[i].scrollIntoView({ behavior: 'smooth' }));
+      this.dots.appendChild(dot);
+    });
+    this.dotEls = this.dots.querySelectorAll('.nav-dot');
+  }
+  observeSlides() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio > 0.5) { const idx = [...this.slides].indexOf(e.target); if (idx >= 0) this.update(idx); } });
+    }, { threshold: 0.5 });
+    this.slides.forEach(s => obs.observe(s));
+  }
+  observeReveals() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { if (e.target.classList.contains('stagger')) { [...e.target.children].forEach((ch, i) => setTimeout(() => ch.classList.add('visible'), i * 100)); } else { e.target.classList.add('visible'); } } });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.reveal, .stagger').forEach(el => obs.observe(el));
+  }
+  update(idx) {
+    this.currentIndex = idx;
+    this.dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+    const num = String(idx + 1).padStart(2, '0');
+    this.counter.innerHTML = `<strong>${num}</strong> / ${this.total}`;
+    this.progress.style.width = `${((idx + 1) / this.total) * 100}%`;
+  }
+  go(dir) { const next = Math.max(0, Math.min(this.total - 1, this.currentIndex + dir)); this.slides[next].scrollIntoView({ behavior: 'smooth' }); }
+  bindKeys() {
+    document.addEventListener('keydown', e => {
+      if (['ArrowDown','ArrowRight','Space','PageDown'].includes(e.code)) { e.preventDefault(); this.go(1); }
+      if (['ArrowUp','ArrowLeft','PageUp'].includes(e.code)) { e.preventDefault(); this.go(-1); }
+      if (e.code === 'Home') { e.preventDefault(); this.slides[0].scrollIntoView({ behavior: 'smooth' }); }
+      if (e.code === 'End') { e.preventDefault(); this.slides[this.total-1].scrollIntoView({ behavior: 'smooth' }); }
+    });
+  }
+  bindWheel() {
+    document.addEventListener('wheel', e => { if (this.wheelTimeout) return; this.wheelTimeout = setTimeout(() => this.wheelTimeout = null, 600); this.go(e.deltaY > 0 ? 1 : -1); }, { passive: true });
+  }
+  bindTouch() {
+    let startY = 0;
+    document.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+    document.addEventListener('touchend', e => { const diff = startY - e.changedTouches[0].clientY; if (Math.abs(diff) > 60) this.go(diff > 0 ? 1 : -1); });
+  }
+}
+document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+</script>
+</body>
+</html>

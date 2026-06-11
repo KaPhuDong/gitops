@@ -33,6 +33,6 @@ spec:
         - name: backend
           image: hashicorp/http-echo:latest
           args:
-            - '-text={"status": "success", "message": "Hello from NestJS/NodeJS Backend API!"}'
+            - '-text={"status":"success","message":"Hello from backend service"}'
           ports:
             - containerPort: 5678

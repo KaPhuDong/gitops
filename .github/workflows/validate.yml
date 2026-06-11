@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'k8s/**'
+      - 'k8s-api/**'
+      - 'argocd/**'
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,4 +15,4 @@ jobs:
           curl -sSLo kc.tgz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
           tar -xzf kc.tgz && sudo mv kubeconform /usr/local/bin/
       - name: Validate Kubernetes Manifests
-        run: kubeconform -strict -summary k8s/
+        run: kubeconform -strict -ignore-missing-schemas -summary argocd/ k8s/ k8s-api/

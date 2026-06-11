@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: api-slo-alerts
+  namespace: demo
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: api-slo
+      rules:
+        - alert: ApiSuccessRateSLIViolation
+          expr: |
+            (sum(rate(flask_http_request_duration_seconds_count{status=~"5..", namespace="demo"}[1m])) 
+            / 
+            sum(rate(flask_http_request_duration_seconds_count{namespace="demo"}[1m]))) > 0.05
+          for: 30s
+          labels:
+            severity: critical
+          annotations:
+            summary: 'API SLO bị vi phạm nghiêm trọng'
+            description: 'Tỷ lệ lỗi của ứng dụng API đã vượt quá mức quy định cho phép 5%!'
