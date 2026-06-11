@@ -8,9 +8,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/KaPhuDong/gitops.git # TODO: thay bằng URL Git thật nếu repo đổi
+    repoURL: https://github.com/KaPhuDong/gitops.git # TODO: thay bang URL Git that neu repo doi
     targetRevision: main
     path: k8s
+    directory:
+      include: web.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
