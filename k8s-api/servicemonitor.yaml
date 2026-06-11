@@ -8,6 +8,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: '1'
 spec:
+  serviceDiscoveryRole: EndpointSlice
   selector:
     matchLabels:
       app: api

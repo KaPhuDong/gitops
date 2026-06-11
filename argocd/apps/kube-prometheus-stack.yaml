@@ -13,8 +13,13 @@ spec:
     targetRevision: '*'
     helm:
       values: |
+        kubelet:
+          serviceMonitor:
+            https: true
+            insecureSkipVerify: true
         prometheus:
           prometheusSpec:
+            serviceDiscoveryRole: EndpointSlice
             serviceMonitorSelectorNilUsesHelmValues: false
             serviceMonitorNamespaceSelector: {}
             ruleSelectorNilUsesHelmValues: false
