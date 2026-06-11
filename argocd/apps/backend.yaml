@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: web
+  name: backend
   namespace: argocd
 spec:
   source:
     repoURL: https://github.com/KaPhuDong/gitops.git
     targetRevision: main
-    path: k8s/web
+    path: k8s/backend
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
