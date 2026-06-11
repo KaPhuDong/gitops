@@ -22,11 +22,11 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabackendls:
+    matchLabels:
       app: backend
   template:
     metadata:
-      labackendls:
+      labels:
         app: backend
     spec:
       containers:

@@ -36,6 +36,6 @@ spec:
             - /bin/sh
             - -c
           args:
-            - echo "<h1>Frontend</h1><p>Status: Connected to Cluster</p>" > /usr/share/nginx/html/index.html && nginx -g "daemon off;"
+            - 'echo "<h1>Frontend</h1><p>Status: Connected to Cluster</p>" > /usr/share/nginx/html/index.html && nginx -g "daemon off;"'
           ports:
             - containerPort: 80
