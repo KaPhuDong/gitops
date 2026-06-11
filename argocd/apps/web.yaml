@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   source:
-    repoURL: https://github.com/<tài-khoản-của-bạn>/gitops.git
+    repoURL: https://github.com/KaPhuDong/gitops.git
     targetRevision: main
     path: k8s/web
   destination:
