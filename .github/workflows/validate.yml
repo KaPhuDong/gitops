@@ -1,4 +1,4 @@
-name: validat
+name: validate # Số âm chạy trước cả wave 0
 on:
   pull_request:
     paths:
