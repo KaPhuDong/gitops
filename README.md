@@ -1,51 +1,61 @@
 # Challenge: Ship Smartly
 
-Repo này triển khai bài Challenge "Ship Smartly" theo 3 phần chính:
+Repo này triển khai bài Challenge **Ship Smartly** theo 3 phần chính:
 
 - **GitOps**: mọi thay đổi đi qua Git, Argo CD tự sync và self-heal.
 - **Observability**: Prometheus/Grafana thu thập metric, có SLO và alert.
-- **Progressive Delivery**: API dùng Argo Rollouts Canary, bản lỗi tự abort dựa trên Prometheus metric.
+- **Progressive Delivery**: API dùng Argo Rollouts Canary, bản lỗi tự abort dựa trên metric Prometheus.
 
-Mục tiêu đạt bài:
+## Mục Tiêu Cần Đạt
 
 - Argo CD quản lý toàn bộ manifest theo mô hình App-of-Apps.
+- Frontend có UI tương tác trực tiếp với API.
 - API có endpoint `/metrics` để Prometheus scrape.
-- Có SLO success rate và alert gửi email cá nhân.
-- Canary không còn pause thủ công vô hạn; hệ thống tự chấm điểm bằng `AnalysisTemplate`.
-- Bản tốt được promote lên 100%, bản lỗi tự abort về bản cũ.
-- Rollback bằng `git revert` trong dưới 5 phút.
+- Có SLO success rate và alert gửi email.
+- Canary dùng `AnalysisTemplate` để tự chấm điểm bằng Prometheus.
+- Bản tốt được promote lên 100%, bản lỗi tự abort về bản ổn định.
+- Rollback bằng `git revert`, không rollback tay trong cluster.
+- CI validate manifest bằng `kubeconform`.
 
 ## Cấu Trúc Repo
-
-Cấu trúc hiện tại đã đưa các manifest app thường ra trực tiếp trong thư mục `k8s/` và đổi tên thành file riêng:
 
 ```text
 gitops/
 |-- argocd/
 |   |-- root.yaml
 |   `-- apps/
-|       |-- web.yaml
+|       |-- api.yaml
+|       |-- argo-rollouts.yaml
 |       |-- backend.yaml
 |       |-- frontend.yaml
 |       |-- kube-prometheus-stack.yaml
-|       |-- argo-rollouts.yaml
-|       `-- api.yaml
+|       `-- web.yaml
 |-- app/
 |   |-- app.py
 |   `-- Dockerfile
+|-- docs/
+|   |-- CONFIG_EXPLANATION.md
+|   |-- PROJECT_FLOW.md
+|   `-- TEST_CASES.md
 |-- k8s/
 |   |-- namespace.yaml
-|   |-- web.yaml
 |   |-- backend.yaml
-|   `-- frontend.yaml
+|   |-- frontend.yaml
+|   `-- web.yaml
 `-- k8s-api/
-    |-- api.yaml
-    |-- servicemonitor.yaml
+    |-- alerts.yaml
     |-- analysis.yaml
-    `-- alerts.yaml
+    |-- api.yaml
+    `-- servicemonitor.yaml
 ```
 
-## App-of-Apps
+## Tài Liệu Bổ Sung
+
+- [docs/TEST_CASES.md](docs/TEST_CASES.md): hướng dẫn test từng case end-to-end.
+- [docs/PROJECT_FLOW.md](docs/PROJECT_FLOW.md): giải thích flow dự án từ Git đến cluster, metric, alert và rollback.
+- [docs/CONFIG_EXPLANATION.md](docs/CONFIG_EXPLANATION.md): giải thích cấu hình mentor có thể hỏi khi review bài.
+
+## App-Of-Apps
 
 Root Application:
 
@@ -53,7 +63,7 @@ Root Application:
 argocd/root.yaml
 ```
 
-Root trỏ tới:
+Root app trỏ tới:
 
 ```text
 argocd/apps/
@@ -61,33 +71,23 @@ argocd/apps/
 
 Các app con:
 
+- `api`: deploy toàn bộ `k8s-api/`.
+- `frontend`: deploy `k8s/frontend.yaml`.
+- `backend`: deploy `k8s/backend.yaml`.
+- `web`: deploy `k8s/web.yaml`.
 - `kube-prometheus-stack`: cài Prometheus, Grafana, Alertmanager.
 - `argo-rollouts`: cài Argo Rollouts controller.
-- `web`: deploy `k8s/web.yaml`.
-- `be`: deploy `k8s/backend.yaml`.
-- `frontend`: deploy `k8s/frontend.yaml`.
-- `api`: deploy toàn bộ `k8s-api/`.
 
-Vì `web`, `backend`, `frontend` hiện là các file nằm chung trong `k8s/`, các Argo CD Application tương ứng dùng:
+Các app `frontend`, `backend`, `web` dùng `directory.include` để mỗi Application chỉ sync đúng file của nó trong thư mục `k8s/`.
+
+Ví dụ:
 
 ```yaml
 source:
   path: k8s
   directory:
-    include: <ten-file>.yaml
+    include: frontend.yaml
 ```
-
-Cách này giúp mỗi app chỉ sync đúng file của nó, tránh deploy trùng tài nguyên.
-
-## Những Giá Trị Cần Thay
-
-Kiểm tra và thay các giá trị thật trước khi demo:
-
-- `argocd/root.yaml` và `argocd/apps/*.yaml`: thay `repoURL` nếu repo GitHub thay đổi.
-- `argocd/apps/kube-prometheus-stack.yaml`: thay SMTP Gmail, Gmail App Password và email nhận alert.
-- `k8s-api/api.yaml`: thay `image: w9-api:1` bằng image registry thật nếu không dùng Minikube local image.
-
-Lưu ý bảo mật: không nên commit Gmail App Password thật vào repo public. Nếu đã push secret thật, nên revoke app password đó và tạo app password mới.
 
 ## Deploy Bằng GitOps
 
@@ -101,35 +101,90 @@ Kiểm tra Argo CD:
 
 ```bash
 kubectl -n argocd get applications
-kubectl -n argocd get application root
-kubectl -n argocd get application api
 ```
 
 Kỳ vọng:
 
-- `root` ở trạng thái `Synced/Healthy`.
-- Các app con ở trạng thái `Synced/Healthy`.
-- Không có drift giữa Git và cluster.
+```text
+root                    Synced   Healthy
+api                     Synced   Healthy
+frontend                Synced   Healthy
+kube-prometheus-stack   Synced   Healthy
+argo-rollouts           Synced   Healthy
+backend                 Synced   Healthy
+web                     Synced   Healthy
+```
 
-## API Có Metrics
+## Frontend UI
 
-Source API nằm ngoài thư mục manifest Kubernetes, tại:
+Frontend nằm ở:
+
+```text
+k8s/frontend.yaml
+```
+
+Frontend gồm:
+
+- `ConfigMap/fe-page`: chứa HTML/CSS/JS.
+- `ConfigMap/fe-nginx-config`: cấu hình nginx proxy.
+- `Deployment/fe`: chạy `nginx:alpine`.
+- `Service/fe-svc`: expose port `8081`.
+
+Port-forward FE:
+
+```bash
+kubectl -n demo port-forward svc/fe-svc 8081:8081
+```
+
+Mở:
+
+```text
+http://localhost:8081
+```
+
+UI có 2 nút chính:
+
+- `Call API`: gọi API một lần và hiển thị JSON response.
+- `Burst 100 Calls`: gọi API nhiều lần để tạo traffic cho Prometheus, AnalysisTemplate và alert.
+
+Frontend gọi API qua nginx proxy:
+
+```text
+Browser -> /api/ -> nginx -> http://api.demo.svc.cluster.local:8080/
+```
+
+Cách này giúp browser gọi same-origin, tránh CORS và không cần expose API trực tiếp.
+
+## API
+
+Source API:
 
 ```text
 app/app.py
 app/Dockerfile
 ```
 
-API Flask có các endpoint:
+API endpoints:
 
-- `/`: endpoint tạo request thành công hoặc lỗi giả lập.
+- `/`: trả JSON success hoặc lỗi giả lập.
 - `/healthz`: readiness probe.
 - `/metrics`: Prometheus scrape metric.
 
-Biến môi trường:
+Biến môi trường quan trọng:
 
-- `VERSION`: version hiện tại của API, ví dụ `v1`, `v2`.
-- `ERROR_RATE`: tỷ lệ lỗi giả lập, ví dụ `0`, `0.2`, `0.5`.
+```yaml
+env:
+  - name: ERROR_RATE
+    value: '0'
+  - name: VERSION
+    value: 'v1'
+```
+
+Ý nghĩa:
+
+- `ERROR_RATE=0`: API chạy khỏe.
+- `ERROR_RATE=0.5`: khoảng 50% request trả HTTP 500.
+- `VERSION`: giúp chứng minh version đang chạy.
 
 Build image local cho Minikube:
 
@@ -140,7 +195,7 @@ minikube image load w9-api:1 -p w9
 
 ## Prometheus Và Alertmanager
 
-Prometheus stack được cài bằng Helm qua Argo CD:
+Prometheus stack được cài bằng Helm qua:
 
 ```text
 argocd/apps/kube-prometheus-stack.yaml
@@ -148,27 +203,44 @@ argocd/apps/kube-prometheus-stack.yaml
 
 Cấu hình quan trọng:
 
-- `serviceMonitorSelectorNilUsesHelmValues: false`: cho phép Prometheus chọn ServiceMonitor ngoài Helm release mặc định.
-- `ruleSelectorNilUsesHelmValues: false`: cho phép Prometheus chọn PrometheusRule ngoài Helm release mặc định.
-- SMTP Alertmanager: gửi alert qua Gmail.
+```yaml
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {}
+    ruleSelectorNilUsesHelmValues: false
+    ruleNamespaceSelector: {}
+```
 
-Kiểm tra Prometheus:
+Ý nghĩa:
+
+- Prometheus có thể scrape `ServiceMonitor` ngoài Helm chart.
+- Prometheus có thể đọc `PrometheusRule` ngoài Helm chart.
+- Namespace selector `{}` cho phép đọc resource ở namespace `demo`.
+
+Port-forward Prometheus:
 
 ```bash
-kubectl -n monitoring get pods
 kubectl -n monitoring port-forward svc/kube-prometheus-stack-prometheus 9090:9090
 ```
 
 Mở:
 
 ```text
-http://localhost:9090/targets
+http://localhost:9090
 ```
 
-Kỳ vọng:
+Port-forward Alertmanager:
 
-- Target của API ở trạng thái `UP`.
-- Query metric có dữ liệu tăng theo thời gian.
+```bash
+kubectl -n monitoring port-forward svc/kube-prometheus-stack-alertmanager 9093:9093
+```
+
+Mở:
+
+```text
+http://localhost:9093
+```
 
 ## ServiceMonitor
 
@@ -185,10 +257,10 @@ Prometheus scrape API qua:
 - Path: `/metrics`
 - Interval: `15s`
 
-Query kiểm tra dữ liệu:
+Query kiểm tra tổng request:
 
 ```promql
-flask_http_request_total{namespace="demo"}
+sum(flask_http_request_duration_seconds_count{namespace="demo"})
 ```
 
 ## SLO Và AnalysisTemplate
@@ -199,13 +271,13 @@ File:
 k8s-api/analysis.yaml
 ```
 
-SLO hiện cấu hình:
+SLO:
 
 ```text
-Success Rate >= 95%
+Success rate >= 95%
 ```
 
-PromQL hiện dùng:
+PromQL success rate:
 
 ```promql
 sum(rate(flask_http_request_duration_seconds_count{status!~"5..", namespace="demo"}[1m]))
@@ -213,13 +285,7 @@ sum(rate(flask_http_request_duration_seconds_count{status!~"5..", namespace="dem
 sum(rate(flask_http_request_duration_seconds_count{namespace="demo"}[1m]))
 ```
 
-Ý nghĩa:
-
-- Tử số: request không phải lỗi `5xx`.
-- Mẫu số: tổng request.
-- Kết quả: tỷ lệ request thành công trong cửa sổ 1 phút.
-
-Ngưỡng trong `AnalysisTemplate`:
+Cấu hình:
 
 ```yaml
 interval: 10s
@@ -227,13 +293,11 @@ successCondition: result >= 0.95
 failureLimit: 2
 ```
 
-Nghĩa là:
+Ý nghĩa:
 
-- Cứ 10 giây Prometheus được query một lần.
-- Nếu success rate đạt từ 95% trở lên, bản canary được xem là khỏe.
-- Nếu dưới 95% quá 2 lần, Rollout tự abort.
-
-Ghi chú: nếu muốn dùng SLO 99%, đổi `successCondition` thành `result >= 0.99` và cập nhật rule alert tương ứng.
+- Cứ 10 giây Argo Rollouts query Prometheus một lần.
+- Nếu success rate >= 95%, canary được xem là khỏe.
+- Nếu success rate dưới ngưỡng quá số lần cho phép, rollout abort.
 
 ## Canary Tự Động
 
@@ -264,13 +328,12 @@ strategy:
 Ý nghĩa:
 
 - Đưa 25% traffic sang bản mới.
-- Chạy analysis trong thời gian pause 1 phút.
-- Nếu ổn, tăng lên 50%.
-- Chạy tiếp analysis trong 30 giây.
-- Nếu vẫn ổn, promote lên 100%.
-- Nếu metric xấu, Rollout tự abort về bản ổn định trước đó.
+- Pause để Prometheus có dữ liệu.
+- Nếu analysis pass, tăng lên 50%.
+- Nếu vẫn pass, promote lên 100%.
+- Nếu metric xấu, rollout abort về bản ổn định.
 
-Theo dõi Rollout:
+Theo dõi rollout:
 
 ```bash
 kubectl argo rollouts get rollout api -n demo --watch
@@ -284,126 +347,151 @@ File:
 k8s-api/alerts.yaml
 ```
 
-Alert `ApiHighErrorRate` sẽ fire khi success rate tụt dưới ngưỡng SLO.
+Alert fire khi error rate > 5% trong 30 giây:
 
-Kiểm tra alert trong Prometheus:
+```promql
+sum(rate(flask_http_request_duration_seconds_count{status=~"5..", namespace="demo"}[1m]))
+/
+sum(rate(flask_http_request_duration_seconds_count{namespace="demo"}[1m]))
+```
+
+Kiểm tra alert:
 
 ```text
 http://localhost:9090/alerts
 ```
 
-Kỳ vọng khi inject lỗi:
+Query:
 
-- Alert chuyển sang trạng thái `Pending`.
-- Sau thời gian `for`, alert chuyển sang `Firing`.
-- Alertmanager gửi email đến địa chỉ đã cấu hình.
+```promql
+ALERTS{alertname="ApiSuccessRateSLIViolation"}
+```
 
-## Cách Demo Auto-Abort
+Email receiver đang cấu hình:
 
-1. Đảm bảo bản ổn định đang chạy:
+```text
+kaphudong04@gmail.com
+```
+
+Lưu ý:
+
+- `smtp_auth_password` vẫn nên để dạng secret, không commit password thật lên repo public.
+- Nếu password còn là `TODO_GMAIL_APP_PASSWORD`, alert có thể firing nhưng email chưa gửi được.
+
+## Demo Good Canary
+
+Sửa `k8s-api/api.yaml`:
 
 ```yaml
 env:
   - name: ERROR_RATE
     value: '0'
   - name: VERSION
-    value: 'v1'
+    value: 'v2-good'
 ```
 
-2. Commit một bản lỗi:
+Commit và push:
+
+```bash
+git add k8s-api/api.yaml
+git commit -m "test: deploy healthy api canary"
+git push
+```
+
+Tạo traffic bằng FE:
+
+```text
+http://localhost:8081 -> Burst 100 Calls
+```
+
+Kỳ vọng:
+
+- Success rate >= 95%.
+- Analysis pass.
+- Rollout promote lên 100%.
+
+## Demo Bad Canary Auto-Abort
+
+Sửa `k8s-api/api.yaml`:
 
 ```yaml
 env:
   - name: ERROR_RATE
     value: '0.5'
   - name: VERSION
-    value: 'v2'
+    value: 'v2-bad'
 ```
 
-3. Push lên Git:
+Commit và push:
 
 ```bash
 git add k8s-api/api.yaml
-git commit -m "test: inject api error for canary"
+git commit -m "test: inject api errors for canary"
 git push
 ```
 
-4. Theo dõi Rollout:
+Theo dõi rollout:
 
 ```bash
 kubectl argo rollouts get rollout api -n demo --watch
 ```
 
+Tạo traffic bằng FE:
+
+```text
+http://localhost:8081 -> Burst 100 Calls
+```
+
 Kỳ vọng:
 
-- Rollout bắt đầu canary.
-- Metric lỗi tăng trong Prometheus.
-- `AnalysisTemplate` fail.
-- Rollout tự abort.
-- ReplicaSet stable vẫn là bản `v1`.
+- FE hiển thị một phần request lỗi.
+- Prometheus error rate > 5%.
+- Alert `ApiSuccessRateSLIViolation` pending rồi firing.
+- Analysis fail.
+- Rollout tự abort, bản lỗi không lên 100%.
 
 ## Rollback Bằng Git Revert
 
-Rollback đúng theo GitOps:
+Rollback đúng GitOps:
 
 ```bash
 git revert HEAD --no-edit
 git push
 ```
 
-Không dùng:
+Không dùng làm cách rollback chính:
 
 ```bash
 kubectl rollout undo
 ```
 
-Lý do: nếu rollback trực tiếp trong cluster, Git vẫn giữ desired state lỗi. Argo CD sẽ self-heal cluster quay lại trạng thái trong Git.
+Lý do:
 
-Tiêu chí bài yêu cầu rollback bằng `git revert` dưới 5 phút.
+- `kubectl rollout undo` chỉ sửa cluster.
+- Git vẫn giữ desired state lỗi.
+- Argo CD có thể sync bản lỗi quay lại.
 
-## Ảnh Minh Chứng Cần Thêm
+## CI Validate
 
-Tạo thư mục:
+GitHub Actions chạy:
 
-```text
-docs/images/
+```bash
+kubeconform -strict -ignore-missing-schemas -summary argocd/ k8s/ k8s-api/
 ```
 
-Sau đó thêm các ảnh bên dưới. Tên file nên giữ đúng để README dễ kiểm tra.
+Mục tiêu:
 
-| Tên ảnh | Mô tả cần chụp |
-| --- | --- |
-| `docs/images/01-argocd-apps-synced.png` | Màn hình Argo CD hoặc lệnh `kubectl -n argocd get applications`, thể hiện `root`, `api`, `kube-prometheus-stack`, `argo-rollouts` đều `Synced/Healthy`. |
-| `docs/images/02-monitoring-pods-running.png` | Kết quả `kubectl -n monitoring get pods`, thể hiện Prometheus/Grafana/Alertmanager đang Running. |
-| `docs/images/03-rollouts-controller-running.png` | Kết quả `kubectl -n argo-rollouts get pods`, thể hiện Argo Rollouts controller đang Running. |
-| `docs/images/04-prometheus-target-api-up.png` | Trang Prometheus Targets, target API ở trạng thái `UP`. |
-| `docs/images/05-prometheus-api-metric.png` | Query `flask_http_request_total{namespace="demo"}` hoặc query success rate có dữ liệu tăng. |
-| `docs/images/06-rollout-stable-v1.png` | Kết quả `kubectl argo rollouts get rollout api -n demo`, thể hiện bản `v1` ổn định trước khi inject lỗi. |
-| `docs/images/07-rollout-canary-running.png` | Rollout đang chạy canary sau khi đổi `VERSION=v2` và tăng `ERROR_RATE`. |
-| `docs/images/08-rollout-auto-aborted.png` | Rollout tự abort khi analysis fail, thể hiện bản lỗi không lên 100%. |
-| `docs/images/09-prometheus-alert-firing.png` | Trang Prometheus Alerts, alert `ApiHighErrorRate` ở trạng thái `Firing`. |
-| `docs/images/10-email-alert-received.png` | Email cá nhân nhận được alert từ Alertmanager. Có thể che bớt thông tin nhạy cảm. |
-| `docs/images/11-git-revert-rollback.png` | Terminal hoặc Git log thể hiện đã dùng `git revert` và push rollback thành công. |
-| `docs/images/12-ci-validate-passed.png` | GitHub Actions job `validate` pass sau khi chạy kubeconform. |
+- Bắt lỗi YAML.
+- Validate manifest Kubernetes cơ bản.
+- Bỏ qua schema CRD không có sẵn như Argo CD Application, Rollout, ServiceMonitor, PrometheusRule.
 
-Sau khi thêm ảnh, có thể nhúng vào README bằng cú pháp:
+Local fallback nếu không có `kubeconform`:
 
-```md
-![Argo CD apps synced](docs/images/01-argocd-apps-synced.png)
+```bash
+kubectl apply --dry-run=client --validate=false -f argocd/root.yaml
+kubectl apply --dry-run=client --validate=false -f k8s/
+kubectl apply --dry-run=client --validate=false -f k8s-api/
 ```
-
-## Checklist Nộp Bài
-
-- Repo có `Rollout`, `AnalysisTemplate`, `ServiceMonitor`, `PrometheusRule`.
-- Toàn bộ thay đổi deploy qua Git và Argo CD.
-- Argo CD app `api` synced, không drift.
-- Prometheus scrape được API.
-- Có SLO và giải thích rõ query/ngưỡng.
-- Alert fire khi inject lỗi.
-- Email alert gửi về email cá nhân.
-- Canary bản lỗi tự abort.
-- Rollback bằng `git revert` dưới 5 phút.
-- README có ảnh hoặc mô tả ảnh minh chứng.
 
 ## Lệnh Kiểm Tra Nhanh
 
@@ -415,14 +503,112 @@ kubectl -n demo get rollout,pod,svc
 kubectl argo rollouts get rollout api -n demo
 ```
 
-Port-forward Prometheus:
+Kiểm tra FE gọi API:
 
 ```bash
-kubectl -n monitoring port-forward svc/kube-prometheus-stack-prometheus 9090:9090
+kubectl -n demo exec deploy/fe -- wget -qO- http://127.0.0.1/api/
 ```
 
-Mở:
+Kỳ vọng:
+
+```json
+{"ok":true,"version":"v1"}
+```
+
+## Checklist Nộp Bài
+
+- Repo có `Rollout`, `AnalysisTemplate`, `ServiceMonitor`, `PrometheusRule`.
+- Toàn bộ thay đổi deploy qua Git và Argo CD.
+- Argo CD apps Synced/Healthy.
+- FE UI gọi API trực tiếp được.
+- FE Burst tạo traffic thật.
+- Prometheus scrape được API.
+- Prometheus metric tăng sau khi Burst.
+- Có SLO và giải thích rõ query/ngưỡng.
+- Alert fire khi inject lỗi.
+- Alertmanager gửi email.
+- Canary bản tốt promote.
+- Canary bản lỗi auto-abort.
+- Rollback bằng `git revert`.
+- CI validate pass.
+
+## Evidence Cần Bổ Sung
+
+Tạo thư mục:
 
 ```text
-http://localhost:9090
+docs/images/
 ```
+
+Sau khi test từng case, chụp ảnh minh chứng và đặt đúng tên file bên dưới. README đã ghi sẵn tên và mô tả để dễ đối chiếu khi nộp bài.
+
+| File ảnh | Mô tả cần chụp |
+| --- | --- |
+| `docs/images/01-argocd-apps-synced.png` | Argo CD UI hoặc terminal `kubectl -n argocd get applications`, thể hiện `root`, `api`, `frontend`, `kube-prometheus-stack`, `argo-rollouts`, `backend`, `web` đều `Synced/Healthy`. |
+| `docs/images/02-demo-pods-running.png` | Terminal `kubectl -n demo get rollout,pod,svc`, thể hiện `rollout/api`, pod `api-*`, `fe-*`, `backend-*`, `web-*` Running và service `fe-svc` port `8081`. |
+| `docs/images/03-monitoring-pods-running.png` | Terminal `kubectl -n monitoring get pods`, thể hiện Prometheus, Grafana, Alertmanager, Operator đều Running. |
+| `docs/images/04-rollouts-controller-running.png` | Terminal `kubectl -n argo-rollouts get pods`, thể hiện Argo Rollouts controller Running. |
+| `docs/images/05-frontend-call-api.png` | Frontend tại `http://localhost:8081` sau khi bấm `Call API`, hiển thị JSON response từ API. |
+| `docs/images/06-frontend-burst-traffic.png` | Frontend sau khi bấm `Burst 100 Calls`, hiển thị total/success/error count và kết quả burst. |
+| `docs/images/07-prometheus-target-api-up.png` | Prometheus Targets tại `http://localhost:9090/targets`, target API ở trạng thái `UP`. |
+| `docs/images/08-prometheus-api-request-total.png` | Prometheus query `sum(flask_http_request_duration_seconds_count{namespace="demo"})`, thể hiện request count tăng sau khi bấm Burst. |
+| `docs/images/09-prometheus-success-rate.png` | Prometheus query success rate, thể hiện bản khỏe có kết quả gần hoặc bằng `1`. |
+| `docs/images/10-good-canary-promoted.png` | Terminal `kubectl argo rollouts get rollout api -n demo --watch`, thể hiện good canary promote lên 100% và Rollout Healthy. |
+| `docs/images/11-bad-canary-running.png` | Rollout đang chạy canary sau khi đổi `ERROR_RATE=0.5` và `VERSION=v2-bad`. |
+| `docs/images/12-bad-canary-auto-aborted.png` | Rollout auto-abort khi analysis fail, thể hiện bản lỗi không được promote lên 100%. |
+| `docs/images/13-prometheus-error-rate.png` | Prometheus query error rate, thể hiện tỷ lệ 5xx vượt `0.05` khi inject lỗi. |
+| `docs/images/14-prometheus-alert-firing.png` | Prometheus Alerts tại `http://localhost:9090/alerts`, alert `ApiSuccessRateSLIViolation` ở trạng thái `Firing`. |
+| `docs/images/15-alertmanager-alert.png` | Alertmanager UI tại `http://localhost:9093`, hiển thị alert API đang firing hoặc grouped. |
+| `docs/images/16-email-alert-received.png` | Email nhận được tại `kaphudong04@gmail.com` từ Alertmanager. Có thể che thông tin nhạy cảm. |
+| `docs/images/17-git-revert-rollback.png` | Terminal `git log --oneline` hoặc GitHub commit history, thể hiện đã dùng `git revert` để rollback. |
+| `docs/images/18-rollback-healthy.png` | Argo CD hoặc rollout sau rollback, thể hiện API trở lại Healthy. |
+| `docs/images/19-ci-validate-passed.png` | GitHub Actions job `validate` pass sau khi chạy `kubeconform`. |
+
+## Evidence Đã Có
+
+### 01. Argo CD Apps Synced
+
+![Argo CD apps synced](docs/images/01-argocd-apps-synced.png)
+
+### 02. Demo Pods Running
+
+![Demo pods running](docs/images/02-demo-pods-running.png)
+
+### 03. Monitoring Pods Running
+
+![Monitoring pods running](docs/images/03-monitoring-pods-running.png)
+
+### 04. Argo Rollouts Controller Running
+
+![Argo Rollouts controller running](docs/images/04-rollouts-controller-running.png)
+
+### 05. Frontend Call API
+
+![Frontend call API](docs/images/05-frontend-call-api.png)
+
+### 06. Frontend Burst Traffic
+
+![Frontend burst traffic](docs/images/06-frontend-burst-traffic.png)
+
+### 07. Prometheus Target API Up
+
+![Prometheus target API up](docs/images/07-prometheus-target-api-up.png)
+
+### 08. Prometheus API Request Total
+
+![Prometheus API request total](docs/images/08-prometheus-api-request-total.png)
+
+### 09. Prometheus Success Rate
+
+![Prometheus success rate](docs/images/09-prometheus-success-rate.png)
+
+Gợi ý thứ tự đưa ảnh vào báo cáo:
+
+1. Argo CD và pod health.
+2. FE gọi API và Burst traffic.
+3. Prometheus target/metric.
+4. Good canary promote.
+5. Bad canary abort.
+6. Alert firing và email.
+7. Git revert rollback.
+8. CI validate pass.
