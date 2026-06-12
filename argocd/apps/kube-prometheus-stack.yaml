@@ -30,7 +30,7 @@ spec:
               smtp_smarthost: 'smtp.gmail.com:587'
               smtp_from: 'kaphudong04@gmail.com'
               smtp_auth_username: 'kaphudong04@gmail.com'
-              smtp_auth_password: 'TODO_GMAIL_APP_PASSWORD'
+              smtp_auth_password: 'lqejfaxkgtitfpsx'
             route:
               group_by: ['alertname']
               receiver: 'email-ca-nhan'
