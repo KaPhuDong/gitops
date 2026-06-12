@@ -532,83 +532,108 @@ Kỳ vọng:
 - Rollback bằng `git revert`.
 - CI validate pass.
 
-## Evidence Cần Bổ Sung
+## Evidence
 
-Tạo thư mục:
+Phần này tổng hợp minh chứng đã thu thập trong quá trình triển khai và kiểm thử dự án. Các ảnh được sắp xếp theo luồng demo: GitOps sync, runtime health, frontend tương tác API, Prometheus metrics, canary analysis, alerting và CI validation.
 
-```text
-docs/images/
-```
+### 1. GitOps Và Trạng Thái Cluster
 
-Sau khi test từng case, chụp ảnh minh chứng và đặt đúng tên file bên dưới. README đã ghi sẵn tên và mô tả để dễ đối chiếu khi nộp bài.
+#### 01. Argo CD Apps Synced/Healthy
 
-| File ảnh | Mô tả cần chụp |
-| --- | --- |
-| `docs/images/01-argocd-apps-synced.png` | Argo CD UI hoặc terminal `kubectl -n argocd get applications`, thể hiện `root`, `api`, `frontend`, `kube-prometheus-stack`, `argo-rollouts`, `backend`, `web` đều `Synced/Healthy`. |
-| `docs/images/02-demo-pods-running.png` | Terminal `kubectl -n demo get rollout,pod,svc`, thể hiện `rollout/api`, pod `api-*`, `fe-*`, `backend-*`, `web-*` Running và service `fe-svc` port `8081`. |
-| `docs/images/03-monitoring-pods-running.png` | Terminal `kubectl -n monitoring get pods`, thể hiện Prometheus, Grafana, Alertmanager, Operator đều Running. |
-| `docs/images/04-rollouts-controller-running.png` | Terminal `kubectl -n argo-rollouts get pods`, thể hiện Argo Rollouts controller Running. |
-| `docs/images/05-frontend-call-api.png` | Frontend tại `http://localhost:8081` sau khi bấm `Call API`, hiển thị JSON response từ API. |
-| `docs/images/06-frontend-burst-traffic.png` | Frontend sau khi bấm `Burst 100 Calls`, hiển thị total/success/error count và kết quả burst. |
-| `docs/images/07-prometheus-target-api-up.png` | Prometheus Targets tại `http://localhost:9090/targets`, target API ở trạng thái `UP`. |
-| `docs/images/08-prometheus-api-request-total.png` | Prometheus query `sum(flask_http_request_duration_seconds_count{namespace="demo"})`, thể hiện request count tăng sau khi bấm Burst. |
-| `docs/images/09-prometheus-success-rate.png` | Prometheus query success rate, thể hiện bản khỏe có kết quả gần hoặc bằng `1`. |
-| `docs/images/10-good-canary-promoted.png` | Terminal `kubectl argo rollouts get rollout api -n demo --watch`, thể hiện good canary promote lên 100% và Rollout Healthy. |
-| `docs/images/11-bad-canary-running.png` | Rollout đang chạy canary sau khi đổi `ERROR_RATE=0.5` và `VERSION=v2-bad`. |
-| `docs/images/12-bad-canary-auto-aborted.png` | Rollout auto-abort khi analysis fail, thể hiện bản lỗi không được promote lên 100%. |
-| `docs/images/13-prometheus-error-rate.png` | Prometheus query error rate, thể hiện tỷ lệ 5xx vượt `0.05` khi inject lỗi. |
-| `docs/images/14-prometheus-alert-firing.png` | Prometheus Alerts tại `http://localhost:9090/alerts`, alert `ApiSuccessRateSLIViolation` ở trạng thái `Firing`. |
-| `docs/images/15-alertmanager-alert.png` | Alertmanager UI tại `http://localhost:9093`, hiển thị alert API đang firing hoặc grouped. |
-| `docs/images/16-email-alert-received.png` | Email nhận được tại `kaphudong04@gmail.com` từ Alertmanager. Có thể che thông tin nhạy cảm. |
-| `docs/images/17-git-revert-rollback.png` | Terminal `git log --oneline` hoặc GitHub commit history, thể hiện đã dùng `git revert` để rollback. |
-| `docs/images/18-rollback-healthy.png` | Argo CD hoặc rollout sau rollback, thể hiện API trở lại Healthy. |
-| `docs/images/19-ci-validate-passed.png` | GitHub Actions job `validate` pass sau khi chạy `kubeconform`. |
-
-## Evidence Đã Có
-
-### 01. Argo CD Apps Synced
+Toàn bộ Application do Argo CD quản lý đều ở trạng thái `Synced/Healthy`, chứng minh desired state trong Git đã được reconcile vào cluster.
 
 ![Argo CD apps synced](docs/images/01-argocd-apps-synced.png)
 
-### 02. Demo Pods Running
+#### 02. Demo Namespace Pods/Services Running
+
+Các workload trong namespace `demo` đang chạy, bao gồm API Rollout, frontend, backend, web và service `fe-svc` dùng port `8081`.
 
 ![Demo pods running](docs/images/02-demo-pods-running.png)
 
-### 03. Monitoring Pods Running
+#### 03. Monitoring Stack Running
+
+Prometheus, Grafana, Alertmanager, kube-state-metrics và Prometheus Operator đang Running trong namespace `monitoring`.
 
 ![Monitoring pods running](docs/images/03-monitoring-pods-running.png)
 
-### 04. Argo Rollouts Controller Running
+#### 04. Argo Rollouts Controller Running
+
+Argo Rollouts controller đã sẵn sàng để quản lý rollout canary và analysis run.
 
 ![Argo Rollouts controller running](docs/images/04-rollouts-controller-running.png)
 
-### 05. Frontend Call API
+### 2. Frontend Tương Tác API
+
+#### 05. Frontend Gọi API Thành Công
+
+Frontend gọi API qua nginx proxy `/api/` và hiển thị JSON response trực tiếp trên UI.
 
 ![Frontend call API](docs/images/05-frontend-call-api.png)
 
-### 06. Frontend Burst Traffic
+#### 06. Frontend Burst Tạo Traffic
+
+Nút `Burst 100 Calls` tạo request traffic từ browser đến API, thay thế thao tác gọi curl thủ công khi cần tạo dữ liệu cho Prometheus và analysis.
 
 ![Frontend burst traffic](docs/images/06-frontend-burst-traffic.png)
 
-### 07. Prometheus Target API Up
+### 3. Prometheus Metrics
+
+#### 07. Prometheus Target API UP
+
+Prometheus phát hiện API target thông qua `ServiceMonitor/api-monitor` và target ở trạng thái `UP`.
 
 ![Prometheus target API up](docs/images/07-prometheus-target-api-up.png)
 
-### 08. Prometheus API Request Total
+#### 08. Request Count Tăng Sau Burst
+
+Metric `flask_http_request_duration_seconds_count{namespace="demo"}` có dữ liệu và request count tăng sau khi tạo traffic từ frontend.
 
 ![Prometheus API request total](docs/images/08-prometheus-api-request-total.png)
 
-### 09. Prometheus Success Rate
+#### 09. Success Rate Bản Khỏe
+
+Prometheus query success rate cho bản khỏe cho kết quả gần hoặc bằng `1`, phù hợp với SLO success rate >= 95%.
 
 ![Prometheus success rate](docs/images/09-prometheus-success-rate.png)
 
-Gợi ý thứ tự đưa ảnh vào báo cáo:
+### 4. Canary Và Analysis
 
-1. Argo CD và pod health.
-2. FE gọi API và Burst traffic.
-3. Prometheus target/metric.
-4. Good canary promote.
-5. Bad canary abort.
-6. Alert firing và email.
-7. Git revert rollback.
-8. CI validate pass.
+#### 10. Good Canary Promote Thành Công
+
+Bản canary khỏe được Argo Rollouts phân tích bằng Prometheus metric và promote thành công lên 100%.
+
+![Good canary promoted](docs/images/10-good-canary-promoted.png)
+
+#### 11. Bad Canary Auto-Abort
+
+Khi inject lỗi API, analysis fail và Argo Rollouts abort bản canary lỗi, ngăn bản lỗi được promote lên 100%.
+
+![Bad canary auto aborted](docs/images/12-bad-canary-auto-aborted.png)
+
+### 5. Alerting
+
+#### 12. Prometheus Error Rate Vượt Ngưỡng
+
+Prometheus query error rate cho thấy tỷ lệ lỗi 5xx vượt ngưỡng `0.05` sau khi inject lỗi.
+
+![Prometheus error rate](docs/images/13-prometheus-error-rate.png)
+
+#### 13. Prometheus Alert Firing
+
+Alert `ApiSuccessRateSLIViolation` chuyển sang trạng thái `Firing`, chứng minh `PrometheusRule` hoạt động.
+
+![Prometheus alert firing](docs/images/14-prometheus-alert-firing.png)
+
+#### 14. Email Alert Received
+
+Alertmanager gửi email cảnh báo đến địa chỉ nhận đã cấu hình.
+
+![Email alert received](docs/images/16-email-alert-received.png)
+
+### 6. CI Validate
+
+#### 15. GitHub Actions Validate Passed
+
+GitHub Actions job `validate` chạy `kubeconform` và pass, chứng minh manifest không còn lỗi YAML/schema cơ bản.
+
+![CI validate passed](docs/images/19-ci-validate-passed.png)
