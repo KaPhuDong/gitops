@@ -289,7 +289,7 @@ Cấu hình:
 
 ```yaml
 interval: 10s
-successCondition: result >= 0.95
+successCondition: result[0] >= 0.95
 failureLimit: 2
 ```
 
