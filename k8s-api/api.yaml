@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: w9-api:2-good # TODO: thay bằng image thật nếu không dùng image local Minikube
+          image: w9-api:1 # TODO: thay bang image that neu khong dung image local Minikube
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
