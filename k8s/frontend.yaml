@@ -8,26 +8,23 @@ metadata:
 data:
   index.html: |
     <!doctype html>
-    <html lang="vi">
+    <html lang="en">
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Ka Phu Dong | Personal Site</title>
+      <title>Ka Phu Dong | GitOps Control Panel</title>
       <style>
         :root {
-          --brand-primary: #0f172a;
-          --brand-accent: #f59e0b;
-          --brand-accent-2: #fb923c;
-          --brand-secondary: #3b82f6;
-          --brand-success: #22c55e;
-          --brand-danger: #ef4444;
-          --text-primary: #1e293b;
-          --text-secondary: #475569;
-          --text-muted: #94a3b8;
-          --border: #e2e8f0;
-          --surface: #ffffff;
-          --surface-card: #f8fafc;
-          --surface-soft: #f1f5f9;
+          --ink: #0f172a;
+          --muted: #64748b;
+          --line: #fed7aa;
+          --orange: #f59e0b;
+          --orange-strong: #ea580c;
+          --orange-soft: #fff7ed;
+          --white: #ffffff;
+          --green: #16a34a;
+          --red: #dc2626;
+          --shadow: 0 24px 70px rgba(234, 88, 12, 0.16);
         }
 
         * {
@@ -37,22 +34,22 @@ data:
         body {
           margin: 0;
           min-height: 100vh;
+          color: var(--ink);
           font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          color: var(--text-primary);
           background:
-            linear-gradient(180deg, rgba(248, 250, 252, 0.94), rgba(255, 255, 255, 0.98)),
-            repeating-linear-gradient(90deg, rgba(15, 23, 42, 0.04) 0 1px, transparent 1px 80px);
+            linear-gradient(180deg, rgba(255, 247, 237, 0.9), rgba(255, 255, 255, 0.98) 42%),
+            repeating-linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0 1px, transparent 1px 88px);
         }
 
+        button,
         a {
-          color: inherit;
-          text-decoration: none;
+          font: inherit;
         }
 
         .page {
-          width: min(1120px, calc(100% - 32px));
+          width: min(1160px, calc(100% - 32px));
           margin: 0 auto;
-          padding: 28px 0 38px;
+          padding: 28px 0 40px;
         }
 
         .topbar {
@@ -60,256 +57,222 @@ data:
           align-items: center;
           justify-content: space-between;
           gap: 16px;
-          padding: 12px 0 28px;
+          margin-bottom: 30px;
         }
 
         .brand {
           display: flex;
           align-items: center;
           gap: 12px;
-          font-weight: 800;
-          color: var(--brand-primary);
+          font-weight: 900;
         }
 
         .mark {
-          width: 42px;
-          height: 42px;
+          width: 44px;
+          height: 44px;
           display: grid;
           place-items: center;
+          color: var(--white);
           border-radius: 8px;
-          color: #fff;
-          background: linear-gradient(135deg, var(--brand-accent), var(--brand-danger));
-          box-shadow: 0 12px 28px rgba(245, 158, 11, 0.26);
+          background: linear-gradient(135deg, var(--orange), var(--orange-strong));
+          box-shadow: 0 14px 32px rgba(245, 158, 11, 0.28);
         }
 
-        .nav {
-          display: flex;
-          gap: 10px;
-          flex-wrap: wrap;
-          color: var(--text-secondary);
-          font-size: 14px;
-          font-weight: 700;
-        }
-
-        .nav a {
-          padding: 8px 10px;
-          border-radius: 7px;
-        }
-
-        .nav a:hover {
-          background: var(--surface-soft);
-        }
-
-        .hero {
-          display: grid;
-          grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-          gap: 28px;
-          align-items: center;
-          min-height: calc(100vh - 118px);
-        }
-
-        .eyebrow {
-          color: var(--brand-accent);
-          font-size: 12px;
-          font-weight: 800;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          margin-bottom: 12px;
-        }
-
-        h1 {
-          max-width: 680px;
-          margin: 0;
-          color: var(--brand-primary);
-          font-size: clamp(42px, 7vw, 82px);
-          line-height: 0.95;
-          letter-spacing: 0;
-        }
-
-        .accent {
-          color: var(--brand-accent);
-        }
-
-        .lead {
-          max-width: 640px;
-          margin: 22px 0 0;
-          color: var(--text-secondary);
-          font-size: clamp(17px, 2vw, 21px);
-          line-height: 1.7;
-        }
-
-        .actions {
-          display: flex;
-          gap: 12px;
-          flex-wrap: wrap;
-          margin-top: 28px;
-        }
-
-        .button {
+        .pill {
           display: inline-flex;
           align-items: center;
-          justify-content: center;
-          min-height: 44px;
-          padding: 0 16px;
-          border-radius: 8px;
-          border: 1px solid var(--border);
-          font-weight: 800;
-          font-size: 14px;
-          background: var(--surface);
-        }
-
-        .button.primary {
-          color: #fff;
-          border-color: transparent;
-          background: var(--brand-primary);
-        }
-
-        .button.primary:hover {
-          background: #1e293b;
-        }
-
-        .button:hover {
-          border-color: rgba(245, 158, 11, 0.55);
-        }
-
-        .profile {
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: var(--surface);
-          box-shadow: 0 24px 70px rgba(15, 23, 42, 0.11);
-          overflow: hidden;
-        }
-
-        .profile-head {
-          display: grid;
-          grid-template-columns: 92px 1fr;
-          gap: 18px;
-          align-items: center;
-          padding: 22px;
-          background:
-            linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(59, 130, 246, 0.09)),
-            var(--surface-card);
-          border-bottom: 1px solid var(--border);
-        }
-
-        .avatar {
-          width: 92px;
-          aspect-ratio: 1;
-          display: grid;
-          place-items: center;
-          border-radius: 8px;
-          color: #fff;
-          font-size: 30px;
-          font-weight: 900;
-          background:
-            linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.72)),
-            linear-gradient(135deg, var(--brand-accent), var(--brand-secondary));
-        }
-
-        .profile h2 {
-          margin: 0;
-          color: var(--brand-primary);
-          font-size: 26px;
-          line-height: 1.1;
-        }
-
-        .role {
-          margin-top: 8px;
-          color: var(--text-secondary);
-          line-height: 1.5;
-        }
-
-        .metrics {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          border-bottom: 1px solid var(--border);
-        }
-
-        .metric {
-          padding: 18px;
-          border-right: 1px solid var(--border);
-        }
-
-        .metric:last-child {
-          border-right: 0;
-        }
-
-        .metric strong {
-          display: block;
-          color: var(--brand-primary);
-          font-size: 24px;
-        }
-
-        .metric span {
-          color: var(--text-muted);
-          font-size: 12px;
-          font-weight: 800;
-          text-transform: uppercase;
-        }
-
-        .stack {
-          padding: 22px;
-        }
-
-        .stack h3,
-        .section h3 {
-          margin: 0 0 12px;
-          color: var(--brand-primary);
-          font-size: 15px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
-        .chips {
-          display: flex;
-          flex-wrap: wrap;
           gap: 8px;
-        }
-
-        .chip {
-          padding: 8px 10px;
-          border-radius: 7px;
-          color: var(--text-secondary);
-          background: var(--surface-card);
-          border: 1px solid var(--border);
+          min-height: 34px;
+          padding: 0 12px;
+          color: #9a3412;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: var(--orange-soft);
           font-size: 13px;
           font-weight: 800;
         }
 
-        .chip.hot {
-          color: #92400e;
-          background: rgba(245, 158, 11, 0.13);
-          border-color: rgba(245, 158, 11, 0.28);
+        .layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+          gap: 24px;
+          align-items: stretch;
         }
 
-        .sections {
+        .hero,
+        .panel {
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.92);
+          box-shadow: var(--shadow);
+        }
+
+        .hero {
+          padding: clamp(28px, 5vw, 54px);
+          min-height: 560px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .hero::before {
+          content: "";
+          position: absolute;
+          inset: auto -12% -30% 32%;
+          height: 360px;
+          background: radial-gradient(circle, rgba(245, 158, 11, 0.2), transparent 68%);
+          pointer-events: none;
+        }
+
+        .eyebrow {
+          color: var(--orange-strong);
+          font-size: 12px;
+          font-weight: 900;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        h1 {
+          max-width: 760px;
+          margin: 14px 0 0;
+          font-size: clamp(42px, 7vw, 82px);
+          line-height: 0.96;
+          letter-spacing: 0;
+        }
+
+        .accent {
+          color: var(--orange-strong);
+        }
+
+        .lead {
+          max-width: 680px;
+          margin: 22px 0 0;
+          color: var(--muted);
+          font-size: clamp(17px, 2vw, 21px);
+          line-height: 1.7;
+        }
+
+        .cards {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-top: 22px;
+          gap: 12px;
+          margin-top: 36px;
+          position: relative;
         }
 
-        .section {
-          min-height: 170px;
-          padding: 18px;
-          border: 1px solid var(--border);
+        .card {
+          min-height: 120px;
+          padding: 16px;
+          border: 1px solid var(--line);
           border-radius: 8px;
-          background: var(--surface);
+          background: var(--white);
         }
 
-        .section p {
-          margin: 0;
-          color: var(--text-secondary);
-          line-height: 1.65;
+        .card strong {
+          display: block;
+          margin-bottom: 8px;
+          color: var(--ink);
           font-size: 15px;
         }
 
+        .card span {
+          color: var(--muted);
+          font-size: 14px;
+          line-height: 1.5;
+        }
+
+        .panel {
+          padding: 22px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .panel h2 {
+          margin: 0;
+          font-size: 28px;
+          line-height: 1.1;
+        }
+
+        .panel p {
+          margin: 0;
+          color: var(--muted);
+          line-height: 1.6;
+        }
+
+        .actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
+        .button {
+          min-height: 48px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          color: var(--ink);
+          background: var(--white);
+          font-weight: 900;
+          cursor: pointer;
+        }
+
+        .button.primary {
+          color: var(--white);
+          border-color: var(--orange-strong);
+          background: linear-gradient(135deg, var(--orange), var(--orange-strong));
+        }
+
+        .button:disabled {
+          cursor: wait;
+          opacity: 0.65;
+        }
+
+        .stats {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+        }
+
+        .stat {
+          padding: 14px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: var(--orange-soft);
+        }
+
+        .stat strong {
+          display: block;
+          font-size: 28px;
+        }
+
+        .stat span {
+          color: var(--muted);
+          font-size: 12px;
+          font-weight: 900;
+          text-transform: uppercase;
+        }
+
+        .result {
+          min-height: 200px;
+          padding: 16px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: #431407;
+          color: #ffedd5;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+          font-size: 13px;
+          line-height: 1.6;
+          white-space: pre-wrap;
+          overflow: auto;
+        }
+
         .status {
-          display: inline-flex;
+          display: flex;
           align-items: center;
-          gap: 8px;
-          margin-top: 18px;
-          color: var(--text-secondary);
+          gap: 10px;
+          color: var(--muted);
           font-size: 13px;
           font-weight: 800;
         }
@@ -318,44 +281,33 @@ data:
           width: 10px;
           height: 10px;
           border-radius: 50%;
-          background: var(--brand-success);
-          box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.13);
+          background: var(--green);
+          box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.12);
         }
 
-        @media (max-width: 880px) {
-          .topbar {
-            align-items: flex-start;
-            flex-direction: column;
-          }
+        .dot.error {
+          background: var(--red);
+          box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.12);
+        }
 
-          .hero,
-          .sections {
+        @media (max-width: 920px) {
+          .layout,
+          .cards {
             grid-template-columns: 1fr;
           }
 
           .hero {
             min-height: auto;
-            padding-top: 20px;
           }
         }
 
-        @media (max-width: 520px) {
-          .profile-head,
-          .metrics {
+        @media (max-width: 560px) {
+          .topbar,
+          .actions,
+          .stats {
             grid-template-columns: 1fr;
-          }
-
-          .metric {
-            border-right: 0;
-            border-bottom: 1px solid var(--border);
-          }
-
-          .metric:last-child {
-            border-bottom: 0;
-          }
-
-          .nav {
-            width: 100%;
+            align-items: flex-start;
+            flex-direction: column;
           }
         }
       </style>
@@ -363,76 +315,195 @@ data:
     <body>
       <main class="page">
         <header class="topbar">
-          <a class="brand" href="#">
+          <div class="brand">
             <span class="mark">KD</span>
             <span>Ka Phu Dong</span>
-          </a>
-          <nav class="nav" aria-label="Main navigation">
-            <a href="#about">About</a>
-            <a href="#work">Work</a>
-            <a href="mailto:kaphudong04@gmail.com">Contact</a>
-          </nav>
+          </div>
+          <div class="pill">GitOps Frontend - Live API Traffic</div>
         </header>
 
-        <section class="hero" id="about">
-          <div>
-            <div class="eyebrow">Personal introduction</div>
-            <h1>Xin chao, minh la <span class="accent">Ka Phu Dong</span>.</h1>
-            <p class="lead">
-              Minh yeu thich DevOps, Kubernetes va GitOps. Trang nay duoc deploy bang nginx trong Kubernetes,
-              quan ly qua Argo CD va cap nhat bang Git.
-            </p>
-            <div class="actions">
-              <a class="button primary" href="mailto:kaphudong04@gmail.com">Lien he</a>
-              <a class="button" href="https://github.com/KaPhuDong/gitops">GitHub repo</a>
+        <section class="layout">
+          <div class="hero">
+            <div>
+              <div class="eyebrow">Orange release dashboard</div>
+              <h1>Hi, I am <span class="accent">Ka Phu Dong</span>.</h1>
+              <p class="lead">
+                I build and operate Kubernetes workloads with GitOps, observability, and progressive delivery.
+                This frontend is served by nginx, managed by Argo CD, and wired to the API through an in-cluster proxy.
+              </p>
             </div>
-            <div class="status"><span class="dot"></span>Frontend dang chay trong namespace demo</div>
+
+            <div class="cards">
+              <div class="card">
+                <strong>GitOps</strong>
+                <span>Every change is declared in Git and synchronized by Argo CD.</span>
+              </div>
+              <div class="card">
+                <strong>Observability</strong>
+                <span>API requests are exported as Prometheus metrics for alerts and analysis.</span>
+              </div>
+              <div class="card">
+                <strong>Canary</strong>
+                <span>Burst traffic helps test rollout analysis without manual curl loops.</span>
+              </div>
+            </div>
           </div>
 
-          <aside class="profile" aria-label="Profile summary">
-            <div class="profile-head">
-              <div class="avatar">KD</div>
-              <div>
-                <h2>DevOps learner</h2>
-                <div class="role">Tap trung vao CI/CD, observability, progressive delivery va van hanh Kubernetes.</div>
-              </div>
+          <aside class="panel">
+            <div>
+              <div class="eyebrow">API tester</div>
+              <h2>Trigger traffic from the browser</h2>
+              <p>Use a single request to inspect the API response, or run a burst to generate traffic for Prometheus, Argo Rollouts analysis, and Alertmanager rules.</p>
             </div>
-            <div class="metrics">
-              <div class="metric"><strong>Git</strong><span>Source of truth</span></div>
-              <div class="metric"><strong>K8s</strong><span>Runtime</span></div>
-              <div class="metric"><strong>Argo</strong><span>Delivery</span></div>
+
+            <div class="actions">
+              <button class="button primary" id="callBtn" type="button">Call API</button>
+              <button class="button" id="burstBtn" type="button">Burst 100 Calls</button>
             </div>
-            <div class="stack">
-              <h3>Tech stack</h3>
-              <div class="chips">
-                <span class="chip hot">GitOps</span>
-                <span class="chip">Kubernetes</span>
-                <span class="chip">Argo CD</span>
-                <span class="chip">Prometheus</span>
-                <span class="chip">Grafana</span>
-                <span class="chip">Docker</span>
-              </div>
+
+            <div class="stats">
+              <div class="stat"><strong id="totalCount">0</strong><span>Total</span></div>
+              <div class="stat"><strong id="okCount">0</strong><span>Success</span></div>
+              <div class="stat"><strong id="failCount">0</strong><span>Errors</span></div>
             </div>
+
+            <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Ready to call /api/</span></div>
+            <pre class="result" id="result">No request yet.</pre>
           </aside>
         </section>
-
-        <section class="sections" id="work">
-          <article class="section">
-            <h3>Mindset</h3>
-            <p>Thich cach lam ro rang: moi thay doi di qua Git, co lich su, co review va co the rollback.</p>
-          </article>
-          <article class="section">
-            <h3>Project</h3>
-            <p>Dang xay dung lab GitOps voi Argo CD, Prometheus, Alertmanager va Argo Rollouts canary.</p>
-          </article>
-          <article class="section">
-            <h3>Goal</h3>
-            <p>Tro thanh ky su co kha nang deploy on dinh, quan sat he thong tot va sua loi co co so.</p>
-          </article>
-        </section>
       </main>
+
+      <script>
+        const callBtn = document.getElementById("callBtn");
+        const burstBtn = document.getElementById("burstBtn");
+        const result = document.getElementById("result");
+        const statusText = document.getElementById("statusText");
+        const statusDot = document.getElementById("statusDot");
+        const totalCount = document.getElementById("totalCount");
+        const okCount = document.getElementById("okCount");
+        const failCount = document.getElementById("failCount");
+
+        const state = { total: 0, ok: 0, fail: 0 };
+
+        function renderStats() {
+          totalCount.textContent = state.total;
+          okCount.textContent = state.ok;
+          failCount.textContent = state.fail;
+        }
+
+        function setStatus(text, failed = false) {
+          statusText.textContent = text;
+          statusDot.classList.toggle("error", failed);
+        }
+
+        async function callApi() {
+          const started = performance.now();
+          const response = await fetch("/api/", { cache: "no-store" });
+          const elapsed = Math.round(performance.now() - started);
+          let body;
+
+          try {
+            body = await response.json();
+          } catch {
+            body = { raw: await response.text() };
+          }
+
+          state.total += 1;
+          if (response.ok) state.ok += 1;
+          else state.fail += 1;
+          renderStats();
+
+          return {
+            status: response.status,
+            ok: response.ok,
+            elapsedMs: elapsed,
+            body
+          };
+        }
+
+        callBtn.addEventListener("click", async () => {
+          callBtn.disabled = true;
+          setStatus("Calling API...");
+          try {
+            const data = await callApi();
+            result.textContent = JSON.stringify(data, null, 2);
+            setStatus(data.ok ? "API responded successfully." : "API returned an error.", !data.ok);
+          } catch (error) {
+            state.total += 1;
+            state.fail += 1;
+            renderStats();
+            result.textContent = error.stack || String(error);
+            setStatus("API call failed before receiving a response.", true);
+          } finally {
+            callBtn.disabled = false;
+          }
+        });
+
+        burstBtn.addEventListener("click", async () => {
+          burstBtn.disabled = true;
+          callBtn.disabled = true;
+          setStatus("Burst running: 100 API requests...");
+
+          const batchSize = 10;
+          const requests = 100;
+          const samples = [];
+
+          try {
+            for (let i = 0; i < requests; i += batchSize) {
+              const batch = Array.from({ length: batchSize }, () => callApi().catch(error => {
+                state.total += 1;
+                state.fail += 1;
+                renderStats();
+                return { status: 0, ok: false, elapsedMs: 0, body: { error: String(error) } };
+              }));
+              const results = await Promise.all(batch);
+              samples.push(...results.slice(0, 2));
+              setStatus(`Burst running: ${Math.min(i + batchSize, requests)} / ${requests} requests sent...`);
+            }
+
+            const recent = samples.slice(-10);
+            result.textContent = JSON.stringify({
+              message: "Burst completed. Check Prometheus metrics and Argo Rollouts analysis.",
+              recentSamples: recent
+            }, null, 2);
+            setStatus(state.fail > 0 ? "Burst completed with API errors." : "Burst completed successfully.", state.fail > 0);
+          } finally {
+            burstBtn.disabled = false;
+            callBtn.disabled = false;
+          }
+        });
+      </script>
     </body>
     </html>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fe-nginx-config
+  namespace: demo
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+data:
+  default.conf: |
+    server {
+      listen 80;
+      server_name _;
+
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+      }
+
+      location /api/ {
+        proxy_pass http://api.demo.svc.cluster.local:8080/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+      }
+    }
 ---
 apiVersion: v1
 kind: Service
@@ -475,7 +546,14 @@ spec:
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
               readOnly: true
+            - name: fe-nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
       volumes:
         - name: fe-page
           configMap:
             name: fe-page
+        - name: fe-nginx-config
+          configMap:
+            name: fe-nginx-config
