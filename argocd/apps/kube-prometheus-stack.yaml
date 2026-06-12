@@ -35,6 +35,7 @@ spec:
               group_by: ['alertname']
               receiver: 'email-ca-nhan'
             receivers:
+              - name: 'null'
               - name: 'email-ca-nhan'
                 email_configs:
                   - to: 'kaphudong04@gmail.com'
