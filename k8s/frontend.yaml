@@ -1,4 +1,440 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fe-page
+  namespace: demo
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="vi">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Ka Phu Dong | Personal Site</title>
+      <style>
+        :root {
+          --brand-primary: #0f172a;
+          --brand-accent: #f59e0b;
+          --brand-accent-2: #fb923c;
+          --brand-secondary: #3b82f6;
+          --brand-success: #22c55e;
+          --brand-danger: #ef4444;
+          --text-primary: #1e293b;
+          --text-secondary: #475569;
+          --text-muted: #94a3b8;
+          --border: #e2e8f0;
+          --surface: #ffffff;
+          --surface-card: #f8fafc;
+          --surface-soft: #f1f5f9;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          min-height: 100vh;
+          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          color: var(--text-primary);
+          background:
+            linear-gradient(180deg, rgba(248, 250, 252, 0.94), rgba(255, 255, 255, 0.98)),
+            repeating-linear-gradient(90deg, rgba(15, 23, 42, 0.04) 0 1px, transparent 1px 80px);
+        }
+
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .page {
+          width: min(1120px, calc(100% - 32px));
+          margin: 0 auto;
+          padding: 28px 0 38px;
+        }
+
+        .topbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 12px 0 28px;
+        }
+
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-weight: 800;
+          color: var(--brand-primary);
+        }
+
+        .mark {
+          width: 42px;
+          height: 42px;
+          display: grid;
+          place-items: center;
+          border-radius: 8px;
+          color: #fff;
+          background: linear-gradient(135deg, var(--brand-accent), var(--brand-danger));
+          box-shadow: 0 12px 28px rgba(245, 158, 11, 0.26);
+        }
+
+        .nav {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+          color: var(--text-secondary);
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .nav a {
+          padding: 8px 10px;
+          border-radius: 7px;
+        }
+
+        .nav a:hover {
+          background: var(--surface-soft);
+        }
+
+        .hero {
+          display: grid;
+          grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+          gap: 28px;
+          align-items: center;
+          min-height: calc(100vh - 118px);
+        }
+
+        .eyebrow {
+          color: var(--brand-accent);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          margin-bottom: 12px;
+        }
+
+        h1 {
+          max-width: 680px;
+          margin: 0;
+          color: var(--brand-primary);
+          font-size: clamp(42px, 7vw, 82px);
+          line-height: 0.95;
+          letter-spacing: 0;
+        }
+
+        .accent {
+          color: var(--brand-accent);
+        }
+
+        .lead {
+          max-width: 640px;
+          margin: 22px 0 0;
+          color: var(--text-secondary);
+          font-size: clamp(17px, 2vw, 21px);
+          line-height: 1.7;
+        }
+
+        .actions {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          margin-top: 28px;
+        }
+
+        .button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 44px;
+          padding: 0 16px;
+          border-radius: 8px;
+          border: 1px solid var(--border);
+          font-weight: 800;
+          font-size: 14px;
+          background: var(--surface);
+        }
+
+        .button.primary {
+          color: #fff;
+          border-color: transparent;
+          background: var(--brand-primary);
+        }
+
+        .button.primary:hover {
+          background: #1e293b;
+        }
+
+        .button:hover {
+          border-color: rgba(245, 158, 11, 0.55);
+        }
+
+        .profile {
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          background: var(--surface);
+          box-shadow: 0 24px 70px rgba(15, 23, 42, 0.11);
+          overflow: hidden;
+        }
+
+        .profile-head {
+          display: grid;
+          grid-template-columns: 92px 1fr;
+          gap: 18px;
+          align-items: center;
+          padding: 22px;
+          background:
+            linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(59, 130, 246, 0.09)),
+            var(--surface-card);
+          border-bottom: 1px solid var(--border);
+        }
+
+        .avatar {
+          width: 92px;
+          aspect-ratio: 1;
+          display: grid;
+          place-items: center;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 30px;
+          font-weight: 900;
+          background:
+            linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.72)),
+            linear-gradient(135deg, var(--brand-accent), var(--brand-secondary));
+        }
+
+        .profile h2 {
+          margin: 0;
+          color: var(--brand-primary);
+          font-size: 26px;
+          line-height: 1.1;
+        }
+
+        .role {
+          margin-top: 8px;
+          color: var(--text-secondary);
+          line-height: 1.5;
+        }
+
+        .metrics {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          border-bottom: 1px solid var(--border);
+        }
+
+        .metric {
+          padding: 18px;
+          border-right: 1px solid var(--border);
+        }
+
+        .metric:last-child {
+          border-right: 0;
+        }
+
+        .metric strong {
+          display: block;
+          color: var(--brand-primary);
+          font-size: 24px;
+        }
+
+        .metric span {
+          color: var(--text-muted);
+          font-size: 12px;
+          font-weight: 800;
+          text-transform: uppercase;
+        }
+
+        .stack {
+          padding: 22px;
+        }
+
+        .stack h3,
+        .section h3 {
+          margin: 0 0 12px;
+          color: var(--brand-primary);
+          font-size: 15px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .chip {
+          padding: 8px 10px;
+          border-radius: 7px;
+          color: var(--text-secondary);
+          background: var(--surface-card);
+          border: 1px solid var(--border);
+          font-size: 13px;
+          font-weight: 800;
+        }
+
+        .chip.hot {
+          color: #92400e;
+          background: rgba(245, 158, 11, 0.13);
+          border-color: rgba(245, 158, 11, 0.28);
+        }
+
+        .sections {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin-top: 22px;
+        }
+
+        .section {
+          min-height: 170px;
+          padding: 18px;
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          background: var(--surface);
+        }
+
+        .section p {
+          margin: 0;
+          color: var(--text-secondary);
+          line-height: 1.65;
+          font-size: 15px;
+        }
+
+        .status {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 18px;
+          color: var(--text-secondary);
+          font-size: 13px;
+          font-weight: 800;
+        }
+
+        .dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: var(--brand-success);
+          box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.13);
+        }
+
+        @media (max-width: 880px) {
+          .topbar {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+
+          .hero,
+          .sections {
+            grid-template-columns: 1fr;
+          }
+
+          .hero {
+            min-height: auto;
+            padding-top: 20px;
+          }
+        }
+
+        @media (max-width: 520px) {
+          .profile-head,
+          .metrics {
+            grid-template-columns: 1fr;
+          }
+
+          .metric {
+            border-right: 0;
+            border-bottom: 1px solid var(--border);
+          }
+
+          .metric:last-child {
+            border-bottom: 0;
+          }
+
+          .nav {
+            width: 100%;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <main class="page">
+        <header class="topbar">
+          <a class="brand" href="#">
+            <span class="mark">KD</span>
+            <span>Ka Phu Dong</span>
+          </a>
+          <nav class="nav" aria-label="Main navigation">
+            <a href="#about">About</a>
+            <a href="#work">Work</a>
+            <a href="mailto:kaphudong04@gmail.com">Contact</a>
+          </nav>
+        </header>
+
+        <section class="hero" id="about">
+          <div>
+            <div class="eyebrow">Personal introduction</div>
+            <h1>Xin chao, minh la <span class="accent">Ka Phu Dong</span>.</h1>
+            <p class="lead">
+              Minh yeu thich DevOps, Kubernetes va GitOps. Trang nay duoc deploy bang nginx trong Kubernetes,
+              quan ly qua Argo CD va cap nhat bang Git.
+            </p>
+            <div class="actions">
+              <a class="button primary" href="mailto:kaphudong04@gmail.com">Lien he</a>
+              <a class="button" href="https://github.com/KaPhuDong/gitops">GitHub repo</a>
+            </div>
+            <div class="status"><span class="dot"></span>Frontend dang chay trong namespace demo</div>
+          </div>
+
+          <aside class="profile" aria-label="Profile summary">
+            <div class="profile-head">
+              <div class="avatar">KD</div>
+              <div>
+                <h2>DevOps learner</h2>
+                <div class="role">Tap trung vao CI/CD, observability, progressive delivery va van hanh Kubernetes.</div>
+              </div>
+            </div>
+            <div class="metrics">
+              <div class="metric"><strong>Git</strong><span>Source of truth</span></div>
+              <div class="metric"><strong>K8s</strong><span>Runtime</span></div>
+              <div class="metric"><strong>Argo</strong><span>Delivery</span></div>
+            </div>
+            <div class="stack">
+              <h3>Tech stack</h3>
+              <div class="chips">
+                <span class="chip hot">GitOps</span>
+                <span class="chip">Kubernetes</span>
+                <span class="chip">Argo CD</span>
+                <span class="chip">Prometheus</span>
+                <span class="chip">Grafana</span>
+                <span class="chip">Docker</span>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="sections" id="work">
+          <article class="section">
+            <h3>Mindset</h3>
+            <p>Thich cach lam ro rang: moi thay doi di qua Git, co lich su, co review va co the rollback.</p>
+          </article>
+          <article class="section">
+            <h3>Project</h3>
+            <p>Dang xay dung lab GitOps voi Argo CD, Prometheus, Alertmanager va Argo Rollouts canary.</p>
+          </article>
+          <article class="section">
+            <h3>Goal</h3>
+            <p>Tro thanh ky su co kha nang deploy on dinh, quan sat he thong tot va sua loi co co so.</p>
+          </article>
+        </section>
+      </main>
+    </body>
+    </html>
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: fe-svc
@@ -32,10 +468,14 @@ spec:
       containers:
         - name: fe
           image: nginx:alpine
-          command:
-            - /bin/sh
-            - -c
-          args:
-            - 'echo "<h1>Frontend</h1><p>Status: Connected to Cluster</p>" > /usr/share/nginx/html/index.html && nginx -g "daemon off;"'
           ports:
             - containerPort: 80
+          volumeMounts:
+            - name: fe-page
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: index.html
+              readOnly: true
+      volumes:
+        - name: fe-page
+          configMap:
+            name: fe-page
