@@ -28,16 +28,17 @@ spec:
           config:
             global:
               smtp_smarthost: 'smtp.gmail.com:587'
-              smtp_from: 'TODO_YOUR_GMAIL@gmail.com'
-              smtp_auth_username: 'TODO_YOUR_GMAIL@gmail.com'
+              smtp_from: 'kaphudong04@gmail.com'
+              smtp_auth_username: 'kaphudong04@gmail.com'
               smtp_auth_password: 'TODO_GMAIL_APP_PASSWORD'
             route:
               group_by: ['alertname']
               receiver: 'email-ca-nhan'
             receivers:
+              - name: 'null'
               - name: 'email-ca-nhan'
                 email_configs:
-                  - to: 'TODO_RECEIVER_EMAIL@gmail.com'
+                  - to: 'kaphudong04@gmail.com'
                     send_resolved: true
   destination:
     server: https://kubernetes.default.svc
